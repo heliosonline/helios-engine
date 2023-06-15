@@ -23,7 +23,7 @@ namespace Helios {
 		}
 
 		HE_EVENT_CLASS_TYPE(WindowResize)
-			HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
+		HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	private:
 		unsigned int m_Width, m_Height;
 	};
@@ -35,7 +35,7 @@ namespace Helios {
 		WindowCloseEvent() = default;
 
 		HE_EVENT_CLASS_TYPE(WindowClose)
-			HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
+		HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
 
@@ -45,7 +45,7 @@ namespace Helios {
 		AppTickEvent() = default;
 
 		HE_EVENT_CLASS_TYPE(AppTick)
-			HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
+		HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
 
@@ -55,7 +55,7 @@ namespace Helios {
 		AppUpdateEvent() = default;
 
 		HE_EVENT_CLASS_TYPE(AppUpdate)
-			HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
+		HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
 
@@ -65,7 +65,7 @@ namespace Helios {
 		AppRenderEvent() = default;
 
 		HE_EVENT_CLASS_TYPE(AppRender)
-			HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
+		HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
 

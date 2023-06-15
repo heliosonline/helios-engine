@@ -1,7 +1,7 @@
 -----------------------
 -- [ PROJECT CONFIG] --
 -----------------------
-project "helios.sandbox"
+project "helios.engine.sandbox"
 	architecture  "x86_64"
 	language      "C++"
 	cppdialect    "C++20"

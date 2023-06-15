@@ -23,7 +23,7 @@ namespace Helios {
 			return ss.str();
 		}
 		HE_EVENT_CLASS_TYPE(MouseMoved)
-			HE_EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+		HE_EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
 		float m_MouseX, m_MouseY;
 	};
@@ -46,7 +46,7 @@ namespace Helios {
 		}
 
 		HE_EVENT_CLASS_TYPE(MouseScrolled)
-			HE_EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+		HE_EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
 		float m_XOffset, m_YOffset;
 	};

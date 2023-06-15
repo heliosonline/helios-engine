@@ -21,7 +21,7 @@ namespace Helios {
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
-//		LOG_GLFW_ERROR("({0}): {1}", error, description);
+		LOG_GLFW_ERROR("({0}): {1}", error, description);
 	}
 
 
@@ -45,19 +45,19 @@ namespace Helios {
 
 		if (s_GLFWWindowCount == 0)
 		{
-//			LOG_CORE_DEBUG("GLFW Version: {0}", glfwGetVersionString());
+			LOG_CORE_DEBUG("GLFW Version: {0}", glfwGetVersionString());
 
 			int success = glfwInit();
-//			LOG_CORE_ASSERT(success, "Could not initialize GLFW!");
+			LOG_CORE_ASSERT(success, "Could not initialize GLFW!");
 
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
 
-#if defined(BUILD_DEBUG) && defined(BUILDWITH_RENDERER_OPENGL)
-		if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
-			glfwWindowHint(GLFW_CONTEXT_DEBUG, GLFW_TRUE);
-//		LOG_CORE_DEBUG("GLFW using debug mode context (hint)");
-#endif
+		#if defined(BUILD_DEBUG) && defined(BUILDWITH_RENDERER_OPENGL)
+			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
+				glfwWindowHint(GLFW_CONTEXT_DEBUG, GLFW_TRUE);
+			LOG_CORE_DEBUG("GLFW using debug mode context (hint)");
+		#endif
 
 //		{ // debug
 //			int count_mon;
@@ -115,10 +115,12 @@ namespace Helios {
 
 	void Window::SetVSync(bool enabled)
 	{
-		if (enabled)
-			glfwSwapInterval(1);
-		else
-			glfwSwapInterval(0);
+		#ifdef BUILDWITH_RENDERER_OPENGL
+			if (enabled)
+				glfwSwapInterval(1);
+			else
+				glfwSwapInterval(0);
+		#endif
 
 		m_Data.VSync = enabled;
 	}

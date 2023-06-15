@@ -16,6 +16,7 @@ project "helios.engine"
 
 	-- Libraries
 	VendorGlfw{}
+	VendorSpdlog{}
 
 
 	includedirs {

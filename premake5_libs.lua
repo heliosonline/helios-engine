@@ -30,7 +30,7 @@ function LibHeliosEngine()
 --	VendorGlm{}
 --	VendorImgui{}
 --	VendorLua{}
---	VendorSpdlog{}
+	VendorSpdlog{}
 --	VendorStb{}
 
 	-- the engine itself
@@ -105,9 +105,9 @@ end
 --end
 
 
---function VendorSpdlog()
---	includedirs "%{wks.location}/Source/Vendor/spdlog/include"
---end
+function VendorSpdlog()
+	includedirs "%{wks.location}/vendor/spdlog/include"
+end
 
 
 --function VendorStb()

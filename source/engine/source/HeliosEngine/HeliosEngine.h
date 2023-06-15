@@ -11,10 +11,10 @@
 //#include <HeliosEngine/Core/UUID.h>
 
 // Events
-//#include <HeliosEngine/Events/Event.h>
-//#include <HeliosEngine/Events/ApplicationEvent.h>
-//#include <HeliosEngine/Events/KeyEvent.h>
-//#include <HeliosEngine/Events/MouseEvent.h>
+#include <HeliosEngine/Events/Event.h>
+#include <HeliosEngine/Events/ApplicationEvent.h>
+#include <HeliosEngine/Events/KeyEvent.h>
+#include <HeliosEngine/Events/MouseEvent.h>
 
 // Renderer (core)
 //#include <HeliosEngine/Renderer/Renderer.h>

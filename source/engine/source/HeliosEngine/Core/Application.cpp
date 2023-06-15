@@ -42,11 +42,11 @@ namespace Helios {
 //			Utils::SetCurrentDir(m_Specification.WorkingDirectory);
 //		}
 
-//		Log::Init("HeliosEngine.log", m_Specification.WorkingDirectory);
+		Log::Init("HeliosEngine.log", m_Specification.WorkingDirectory);
 
-//		LOG_CORE_DEBUG("Working path: {0}", m_Specification.WorkingDirectory);
+		LOG_CORE_DEBUG("Working path: {0}", m_Specification.WorkingDirectory);
 
-//		LOG_CORE_ASSERT(!s_Instance, "Application already exists!");
+		LOG_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
 		m_Window = Window::Create(WindowSpecification(m_Specification.Name));

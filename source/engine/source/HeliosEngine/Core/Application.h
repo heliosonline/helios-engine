@@ -20,7 +20,7 @@ namespace Helios {
 
 		const char* operator[](int index) const
 		{
-//			LOG_CORE_ASSERT(index < Count, "");
+			LOG_CORE_ASSERT(index < Count, "");
 			return Args[index];
 		}
 	};

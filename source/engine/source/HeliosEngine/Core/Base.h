@@ -2,7 +2,7 @@
 
 
 // Configuration
-//#include "HeliosEngine/HeliosEngineConfig.h"
+#include "HeliosEngine/HeliosEngineConfig.h"
 
 
 // Platform

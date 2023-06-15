@@ -40,7 +40,11 @@ namespace Helios {
 
 // minimal log level
 #if !defined(LOG_LEVEL)
-#    define LOG_LEVEL LOG_LEVEL_DEBUG
+#	ifdef BUILD_DEBUG
+#		define LOG_LEVEL LOG_LEVEL_DEBUG
+#	else
+#		define LOG_LEVEL LOG_LEVEL_INFO
+#	endif
 #endif
 
 // Logging macros for HeliosEngine

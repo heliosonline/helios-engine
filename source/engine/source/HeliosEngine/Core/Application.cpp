@@ -34,13 +34,13 @@ namespace Helios {
 		// set working directory
 		if (!m_Specification.WorkingDirectory.empty())
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
-//		if (m_Specification.hints & Hints::HINT_USE_CWD)
-//			m_Specification.WorkingDirectory = Utils::GetCurrentDir();
-//		if (m_Specification.hints & Hints::HINT_USE_EXEPATH_AS_CWD)
-//		{
-//			m_Specification.WorkingDirectory = Utils::GetExePath();
-//			Utils::SetCurrentDir(m_Specification.WorkingDirectory);
-//		}
+		if (m_Specification.hints & Hints::HINT_USE_CWD)
+			m_Specification.WorkingDirectory = std::filesystem::current_path().string();
+		if (m_Specification.hints & Hints::HINT_USE_EXEPATH_AS_CWD)
+		{
+			m_Specification.WorkingDirectory = GetExePath();
+			std::filesystem::current_path(m_Specification.WorkingDirectory);
+		}
 
 		Log::Init("HeliosEngine.log", m_Specification.WorkingDirectory);
 

@@ -24,4 +24,7 @@ namespace Helios {
 	}
 
 
+	std::string GetExePath();
+
+
 } // namespace Helios

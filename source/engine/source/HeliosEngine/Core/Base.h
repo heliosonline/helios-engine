@@ -45,4 +45,4 @@
 // Engine Misc
 #include "HeliosEngine/Core/Util.h"
 #include "HeliosEngine/Core/Log.h"
-//#include "HeliosEngine/Debug/Instrumentor.h"
+#include "HeliosEngine/Debug/Instrumentor.h"

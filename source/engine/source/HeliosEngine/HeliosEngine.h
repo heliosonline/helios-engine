@@ -4,10 +4,10 @@
 #include <HeliosEngine/Core/Base.h>
 #include <HeliosEngine/Core/Util.h>
 #include <HeliosEngine/Core/Application.h>
-//#include <HeliosEngine/Core/Layer.h>
+#include <HeliosEngine/Core/Layer.h>
 //#include <HeliosEngine/UI/UILayer.h>
 //#include <HeliosEngine/Core/Input.h>
-//#include <HeliosEngine/Core/Timestep.h>
+#include <HeliosEngine/Core/Timestep.h>
 //#include <HeliosEngine/Core/UUID.h>
 
 // Events

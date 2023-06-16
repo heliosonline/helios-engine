@@ -2,8 +2,8 @@
 
 #include "HeliosEngine/Core/Application.h"
 #include "HeliosEngine/Core/EntryPoint.h"
-//#include "HeliosEngine/Core/Timer.h"
-//#include "HeliosEngine/Core/Timestep.h"
+#include "HeliosEngine/Core/Timer.h"
+#include "HeliosEngine/Core/Timestep.h"
 //#include "HeliosEngine/Utils/Path.h"
 //#include "HeliosEngine/Renderer/Renderer.h"
 //#include "HeliosEngine/Core/Assets.h"
@@ -68,28 +68,28 @@ namespace Helios {
 	}
 
 
-//	void Application::PushLayer(Layer* layer)
-//	{
-//		m_LayerStack.PushLayer(layer);
-//		layer->OnAttach();
-//
-//		int size_x, size_y;
-//		glfwGetWindowSize((GLFWwindow*)m_Window->GetNativeWindow(), &size_x, &size_y);
-//		WindowResizeEvent event(size_x, size_y);
-//		OnEvent(event);
-//	}
+	void Application::PushLayer(Layer* layer)
+	{
+		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
+
+		int size_x, size_y;
+		glfwGetWindowSize((GLFWwindow*)m_Window->GetNativeWindow(), &size_x, &size_y);
+		WindowResizeEvent event(size_x, size_y);
+		OnEvent(event);
+	}
 
 
-//	void Application::PushOverlay(Layer* layer)
-//	{
-//		m_LayerStack.PushOverlay(layer);
-//		layer->OnAttach();
-//
-//		int size_x, size_y;
-//		glfwGetWindowSize((GLFWwindow*)m_Window->GetNativeWindow(), &size_x, &size_y);
-//		WindowResizeEvent event(size_x, size_y);
-//		OnEvent(event);
-//	}
+	void Application::PushOverlay(Layer* layer)
+	{
+		m_LayerStack.PushOverlay(layer);
+		layer->OnAttach();
+
+		int size_x, size_y;
+		glfwGetWindowSize((GLFWwindow*)m_Window->GetNativeWindow(), &size_x, &size_y);
+		WindowResizeEvent event(size_x, size_y);
+		OnEvent(event);
+	}
 
 
 	void Application::Close()
@@ -104,55 +104,55 @@ namespace Helios {
 		dispatcher.Dispatch<WindowCloseEvent>(HE_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(HE_BIND_EVENT_FN(Application::OnWindowResize));
 
-//		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
-//		{
-//			if (e.Handled)
-//				break;
-//			(*it)->OnEvent(e);
-//		}
+		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
+		{
+			if (e.Handled)
+				break;
+			(*it)->OnEvent(e);
+		}
 	}
 
 	void Application::Run()
 	{
-//		Timer RunLoopTimer;
+		Timer RunLoopTimer;
 		while (m_Running)
 		{
-//			Timestep timestep = RunLoopTimer.Elapsed();
-//			RunLoopTimer.Reset();
+			Timestep timestep = RunLoopTimer.Elapsed();
+			RunLoopTimer.Reset();
 
-//			{ // tempoary for debuging
-//				static int fps = 0;
-//				fps += (int)(1.0f / timestep);
-//				static int fps_cnt = 0;
-//				fps_cnt++;
-//				static float fps_ts = 0;
-//				fps_ts += timestep;
-//				if (fps_ts >= 1.0f)
-//				{
-//					std::ostringstream title;
-//					title << "FPS: " << fps / fps_cnt << " (" << 1000 * fps_ts / fps_cnt << " ms)";
-//					glfwSetWindowTitle((GLFWwindow*)m_Window->GetNativeWindow(), title.str().c_str());
-//					fps = 0;
-//					fps_cnt = 0;
-//					fps_ts = 0;
-//				}
-//			} // tempoary for debuging
+			{ // tempoary for debuging
+				static int fps = 0;
+				fps += (int)(1.0f / timestep);
+				static int fps_cnt = 0;
+				fps_cnt++;
+				static float fps_ts = 0;
+				fps_ts += timestep;
+				if (fps_ts >= 1.0f)
+				{
+					std::ostringstream title;
+					title << "FPS: " << fps / fps_cnt << " (" << 1000 * fps_ts / fps_cnt << " ms)";
+					glfwSetWindowTitle((GLFWwindow*)m_Window->GetNativeWindow(), title.str().c_str());
+					fps = 0;
+					fps_cnt = 0;
+					fps_ts = 0;
+				}
+			} // tempoary for debuging
 
 			if (!m_Minimized)
 			{
 				{
-//					for (Layer* layer : m_LayerStack)
-//						layer->OnUpdate(timestep);
+					for (Layer* layer : m_LayerStack)
+						layer->OnUpdate(timestep);
 				}
 
-				{
+//				{
 //					m_ImGuiLayer->Begin();
 //					//static bool show = true;
 //					//ImGui::ShowDemoWindow(&show);
 //					for (Layer* layer : m_LayerStack)
 //						layer->OnImGuiRender();
 //					m_ImGuiLayer->End();
-				}
+//				}
 			}
 
 			{

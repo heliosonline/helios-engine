@@ -1,6 +1,6 @@
 #pragma once
 
-//#include "HeliosEngine/Core/LayerStack.h"
+#include "HeliosEngine/Core/Layer.h"
 #include "HeliosEngine/Core/Window.h"
 #include "HeliosEngine/Events/Event.h"
 #include "HeliosEngine/Events/ApplicationEvent.h"
@@ -56,8 +56,8 @@ namespace Helios {
 
 		void OnEvent(Event& e);
 
-//		void PushLayer(Layer* layer);
-//		void PushOverlay(Layer* layer);
+		void PushLayer(Layer* layer);
+		void PushOverlay(Layer* layer);
 
 		Window& GetWindow() { return *m_Window; }
 
@@ -72,7 +72,7 @@ namespace Helios {
 //		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		bool m_Minimized = false;
-//		LayerStack m_LayerStack;
+		LayerStack m_LayerStack;
 
 	private:
 		static Application* s_Instance;

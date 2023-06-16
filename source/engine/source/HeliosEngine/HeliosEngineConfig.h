@@ -2,7 +2,7 @@
 
 
 // Enable profiling
-//#define HE_PROFILER_ENABLE 0
+#define HE_PROFILER_ENABLE 0
 
 
 // Enable assert macros

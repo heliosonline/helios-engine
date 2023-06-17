@@ -17,7 +17,7 @@
 #include <HeliosEngine/Events/MouseEvent.h>
 
 // Renderer (core)
-//#include <HeliosEngine/Renderer/Renderer.h>
+#include <HeliosEngine/Renderer/Renderer.h>
 //#include <HeliosEngine/Renderer/Renderer2D.h>
 //#include <HeliosEngine/Renderer/RenderCommand.h>
 // Renderer (wrapper)

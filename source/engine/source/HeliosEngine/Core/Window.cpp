@@ -1,10 +1,12 @@
 #include "pch.h"
 
 #include "HeliosEngine/Core/Window.h"
+
 #include "HeliosEngine/Events/ApplicationEvent.h"
 #include "HeliosEngine/Events/MouseEvent.h"
 #include "HeliosEngine/Events/KeyEvent.h"
-//#include "HeliosEngine/Renderer/Renderer.h"
+
+#include "HeliosEngine/Renderer/Renderer.h"
 
 #include <GLFW/glfw3.h>
 
@@ -56,7 +58,7 @@ namespace Helios {
 		#if defined(BUILD_DEBUG) && defined(BUILDWITH_RENDERER_OPENGL)
 			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_CONTEXT_DEBUG, GLFW_TRUE);
-			LOG_CORE_DEBUG("GLFW using debug mode context (hint)");
+			LOG_CORE_DEBUG("GLFW using debug mode context for OpenGL (hint)");
 		#endif
 
 //		{ // debug
@@ -116,10 +118,13 @@ namespace Helios {
 	void Window::SetVSync(bool enabled)
 	{
 		#ifdef BUILDWITH_RENDERER_OPENGL
-			if (enabled)
-				glfwSwapInterval(1);
-			else
-				glfwSwapInterval(0);
+			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
+			{
+				if (enabled)
+					glfwSwapInterval(1);
+				else
+					glfwSwapInterval(0);
+			}
 		#endif
 
 		m_Data.VSync = enabled;

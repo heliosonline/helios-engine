@@ -14,7 +14,7 @@ namespace Helios {
 
 	LayerStack::~LayerStack()
 	{
-//		HE_PROFILER_FUNCTION();
+		HE_PROFILER_FUNCTION();
 
 		for (Layer* layer : m_Layers)
 		{
@@ -26,7 +26,7 @@ namespace Helios {
 
 	void LayerStack::PushLayer(Layer* layer)
 	{
-//		HE_PROFILER_FUNCTION();
+		HE_PROFILER_FUNCTION();
 
 		m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
 		m_LayerInsertIndex++;
@@ -35,7 +35,7 @@ namespace Helios {
 
 	void LayerStack::PushOverlay(Layer* overlay)
 	{
-//		HE_PROFILER_FUNCTION();
+		HE_PROFILER_FUNCTION();
 
 		m_Layers.emplace_back(overlay);
 	}
@@ -43,7 +43,7 @@ namespace Helios {
 
 	void LayerStack::PopLayer(Layer* layer)
 	{
-//		HE_PROFILER_FUNCTION();
+		HE_PROFILER_FUNCTION();
 
 		auto it = std::find(m_Layers.begin(), m_Layers.begin() + m_LayerInsertIndex, layer);
 		if (it != m_Layers.begin() + m_LayerInsertIndex)
@@ -57,7 +57,7 @@ namespace Helios {
 
 	void LayerStack::PopOverlay(Layer* overlay)
 	{
-//		HE_PROFILER_FUNCTION();
+		HE_PROFILER_FUNCTION();
 
 		auto it = std::find(m_Layers.begin() + m_LayerInsertIndex, m_Layers.end(), overlay);
 		if (it != m_Layers.end())

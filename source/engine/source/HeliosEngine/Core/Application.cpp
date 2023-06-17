@@ -4,8 +4,10 @@
 #include "HeliosEngine/Core/EntryPoint.h"
 #include "HeliosEngine/Core/Timer.h"
 #include "HeliosEngine/Core/Timestep.h"
-//#include "HeliosEngine/Utils/Path.h"
-//#include "HeliosEngine/Renderer/Renderer.h"
+#include "HeliosEngine/Core/Util.h"
+
+#include "HeliosEngine/Renderer/Renderer.h"
+
 //#include "HeliosEngine/Core/Assets.h"
 
 //#include <GLFW/glfw3.h>
@@ -42,7 +44,7 @@ namespace Helios {
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
 		}
 
-		Log::Init("HeliosEngine.log", m_Specification.WorkingDirectory);
+		Log::Init(m_Specification.logfile, m_Specification.WorkingDirectory);
 
 		LOG_CORE_DEBUG("Working path: {0}", m_Specification.WorkingDirectory);
 
@@ -52,7 +54,7 @@ namespace Helios {
 		m_Window = Window::Create(WindowSpecification(m_Specification.Name));
 		m_Window->SetEventCallback(HE_BIND_EVENT_FN(Application::OnEvent));
 
-//		Renderer::Init();
+		Renderer::Init();
 //		Assets::Init();
 
 //		static std::string inipath = m_Specification.WorkingDirectory;
@@ -64,7 +66,7 @@ namespace Helios {
 
 	Application::~Application()
 	{
-//		Renderer::Shutdown();
+		Renderer::Shutdown();
 	}
 
 
@@ -178,7 +180,7 @@ namespace Helios {
 		}
 
 		m_Minimized = false;
-//		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
 		return false;
 	}

@@ -30,6 +30,7 @@ Helios::Application* Helios::CreateApplication(Helios::ApplicationCommandLineArg
 	spec.Name = "Helios-Sandbox";
 	spec.CommandLineArgs = args;
 	spec.hints |= Helios::Hints::HINT_USE_EXEPATH_AS_CWD;
+	spec.logfile = "Helios-Sandbox.log";
 
 	return new HeliosSandbox(spec);
 }

@@ -2,8 +2,10 @@
 
 #include "HeliosEngine/Core/Layer.h"
 #include "HeliosEngine/Core/Window.h"
+
 #include "HeliosEngine/Events/Event.h"
 #include "HeliosEngine/Events/ApplicationEvent.h"
+
 //#include "HeliosEngine/ImGui/ImGuiLayer.h"
 
 
@@ -41,6 +43,8 @@ namespace Helios {
 		ApplicationCommandLineArgs CommandLineArgs;
 		// Basic configuration hints
 		unsigned int hints = 0;
+		// Name of the logfile
+		std::string logfile = "HeliosEngine.log";
 	};
 
 

@@ -50,71 +50,39 @@ project "helios.engine"
 
 	filter "platforms:Windows"
 
-		defines {
-			--"BUILDWITH_RENDERER_DIRECTX",
-			--"BUILDWITH_RENDERER_METAL",
-			--"BUILDWITH_RENDERER_OPENGL",
-			"BUILDWITH_RENDERER_VULKAN",
-		}
-
 		files {
 			"source/Platform/System/Windows/**.h",
 			"source/Platform/System/Windows/**.cpp",
-			"source/Platform/Renderer/DirectX/**.h",
-			"source/Platform/Renderer/DirectX/**.cpp",
-			--"source/Platform/Renderer/Metal/**.h",
-			--"source/Platform/Renderer/Metal/**.cpp",
-			"source/Platform/Renderer/OpenGL/**.h",
-			"source/Platform/Renderer/OpenGL/**.cpp",
-			"source/Platform/Renderer/Vulkan/**.h",
-			"source/Platform/Renderer/Vulkan/**.cpp",
 		}
+		VendorDirectX{}
+		--VendorMetal{}
+		VendorVulkan{}
+		VendorOpenGL{}
+
 
 
 	filter "platforms:Linux"
 
-		defines {
-			--"BUILDWITH_RENDERER_DIRECTX",
-			--"BUILDWITH_RENDERER_METAL",
-			"BUILDWITH_RENDERER_OPENGL",
-			"BUILDWITH_RENDERER_VULKAN",
-		}
-
 		files {
 			"source/Platform/System/Linux/**.h",
 			"source/Platform/System/Linux/**.cpp",
-			--"source/Platform/Renderer/DirectX/**.h",
-			--"source/Platform/Renderer/DirectX/**.cpp",
-			--"source/Platform/Renderer/Metal/**.h",
-			--"source/Platform/Renderer/Metal/**.cpp",
-			"source/Platform/Renderer/OpenGL/**.h",
-			"source/Platform/Renderer/OpenGL/**.cpp",
-			"source/Platform/Renderer/Vulkan/**.h",
-			"source/Platform/Renderer/Vulkan/**.cpp",
 		}
+		--VendorDirectX{}
+		--VendorMetal{}
+		VendorVulkan{}
+		VendorOpenGL{}
 
 
 	filter "platforms:MacOS"
 
-		defines {
-			--"BUILDWITH_RENDERER_DIRECTX",
-			"BUILDWITH_RENDERER_METAL",
-			"BUILDWITH_RENDERER_OPENGL",
-			"BUILDWITH_RENDERER_VULKAN",
-		}
-
 		files {
 			"source/Platform/System/MacOS/**.h",
 			"source/Platform/System/MacOS/**.cpp",
-			--"source/Platform/Renderer/DirectX/**.h",
-			--"source/Platform/Renderer/DirectX/**.cpp",
-			"source/Platform/Renderer/Metal/**.h",
-			"source/Platform/Renderer/Metal/**.cpp",
-			"source/Platform/Renderer/OpenGL/**.h",
-			"source/Platform/Renderer/OpenGL/**.cpp",
-			"source/Platform/Renderer/Vulkan/**.h",
-			"source/Platform/Renderer/Vulkan/**.cpp",
 		}
+		--VendorDirectX{}
+		VendorMetal{}
+		VendorVulkan{}
+		VendorOpenGL{}
 
 
 	filter {}

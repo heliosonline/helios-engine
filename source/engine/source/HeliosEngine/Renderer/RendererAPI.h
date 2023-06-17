@@ -13,6 +13,8 @@ namespace Helios {
 #	define DEFAULT_RENDERERAPI RendererAPI::API::Vulkan
 #elif defined BUILDWITH_RENDERER_OPENGL
 #	define DEFAULT_RENDERERAPI RendererAPI::API::OpenGL
+#else
+#	define DEFAULT_RENDERERAPI RendererAPI::API::None
 #endif
 
 

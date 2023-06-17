@@ -44,6 +44,48 @@ end
 -------------------------------------------------------------------------------
 
 
+function VendorVulkan()
+	if os.getenv("VULKAN_SDK") then
+		includedirs "%VULKAN_SDK%/Include"
+		libdirs "%VULKAN_SDK%/Lib"
+		links "vulkan-1"
+
+		defines "BUILDWITH_RENDERER_VULKAN"
+		files {
+			"source/Platform/Renderer/Vulkan/**.h",
+			"source/Platform/Renderer/Vulkan/**.cpp",
+		}
+	end
+end
+
+
+function VendorOpenGL()
+--	defines "BUILDWITH_RENDERER_OPENGL"
+--	files {
+--		"source/Platform/Renderer/OpenGL/**.h",
+--		"source/Platform/Renderer/OpenGL/**.cpp",
+--	}
+end
+
+
+function VendorMetal()
+--	defines "BUILDWITH_RENDERER_METAL"
+--	files {
+--		"source/Platform/Renderer/Metal/**.h",
+--		"source/Platform/Renderer/Metal/**.cpp",
+--	}
+end
+
+
+function VendorDirectX()
+--	defines "BUILDWITH_RENDERER_DIRECTX"
+--	files {
+--		"source/Platform/Renderer/DirectX/**.h",
+--		"source/Platform/Renderer/DirectX/**.cpp",
+--	}
+end
+
+
 --function VendorAsio()
 --	includedirs "%{wks.location}/Source/Vendor/asio/asio-1.24.0/include"
 --end

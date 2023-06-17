@@ -13,3 +13,7 @@
 # Build and Binary
 _bin/
 _build/
+
+
+# Speszial files
+scripts/windows/vulkan-sdk.exe

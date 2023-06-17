@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "HeliosEngine/Core/Application.h"
+#include "HeliosEngine/Core/Config.h"
 #include "HeliosEngine/Core/EntryPoint.h"
 #include "HeliosEngine/Core/Timer.h"
 #include "HeliosEngine/Core/Timestep.h"
@@ -45,11 +46,14 @@ namespace Helios {
 		}
 
 		Log::Init(m_Specification.logfile, m_Specification.WorkingDirectory);
+		LOG_CORE_INFO("Logging started.");
 
 		LOG_CORE_DEBUG("Working path: {0}", m_Specification.WorkingDirectory);
 
 		LOG_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
+
+		Config::Init(m_Specification.configfile, m_Specification.WorkingDirectory);
 
 		m_Window = Window::Create(WindowSpecification(m_Specification.Name));
 		m_Window->SetEventCallback(HE_BIND_EVENT_FN(Application::OnEvent));
@@ -66,7 +70,10 @@ namespace Helios {
 
 	Application::~Application()
 	{
+		Config::Update();
 		Renderer::Shutdown();
+
+		LOG_CORE_INFO("Shutdown.");
 	}
 
 

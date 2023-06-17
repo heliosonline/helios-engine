@@ -16,6 +16,7 @@ namespace Helios {
 
 	Scope<Window> Window::Create(const WindowSpecification& spec)
 	{
+		LOG_CORE_DEBUG("Creating main window.");
 		return CreateScope<Window>(spec);
 	}
 	static uint8_t s_GLFWWindowCount = 0;

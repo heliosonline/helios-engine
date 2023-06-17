@@ -45,6 +45,8 @@ namespace Helios {
 		unsigned int hints = 0;
 		// Name of the logfile
 		std::string logfile = "HeliosEngine.log";
+		// Name of the configfile
+		std::string configfile = "HeliosEngine.cfg";
 	};
 
 

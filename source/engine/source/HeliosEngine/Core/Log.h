@@ -19,10 +19,13 @@ namespace Helios {
 		static Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
 		static Ref<spdlog::logger>& GetGLFWLogger() { return s_GLFWLogger; }
 		static Ref<spdlog::logger>& GetAppLogger() { return s_AppLogger; }
+		static Ref<spdlog::logger>& GetRenderLogger() { return s_RenderLogger; }
+
 	private:
 		static Ref<spdlog::logger> s_CoreLogger;
 		static Ref<spdlog::logger> s_GLFWLogger;
 		static Ref<spdlog::logger> s_AppLogger;
+		static Ref<spdlog::logger> s_RenderLogger;
 	};
 
 
@@ -48,24 +51,28 @@ namespace Helios {
 #endif
 
 // Logging macros for HeliosEngine
-#define LOG_CORE_TRACE(...) (LOG_LEVEL <= LOG_LEVEL_TRACE) ? ::Helios::Log::GetCoreLogger()->trace(__VA_ARGS__)    : (void)0
-#define LOG_CORE_DEBUG(...) (LOG_LEVEL <= LOG_LEVEL_DEBUG) ? ::Helios::Log::GetCoreLogger()->debug(__VA_ARGS__)    : (void)0
-#define LOG_CORE_INFO(...)  (LOG_LEVEL <= LOG_LEVEL_INFO)  ? ::Helios::Log::GetCoreLogger()->info(__VA_ARGS__)     : (void)0
-#define LOG_CORE_WARN(...)  (LOG_LEVEL <= LOG_LEVEL_WARN)  ? ::Helios::Log::GetCoreLogger()->warn(__VA_ARGS__)     : (void)0
-#define LOG_CORE_ERROR(...) (LOG_LEVEL <= LOG_LEVEL_ERROR) ? ::Helios::Log::GetCoreLogger()->error(__VA_ARGS__)    : (void)0
-#define LOG_CORE_FATAL(...) (LOG_LEVEL <= LOG_LEVEL_FATAL) ? ::Helios::Log::GetCoreLogger()->critical(__VA_ARGS__) : (void)0
+#define LOG_CORE_TRACE(...)   (LOG_LEVEL <= LOG_LEVEL_TRACE) ? ::Helios::Log::GetCoreLogger()->trace(__VA_ARGS__)      : (void)0
+#define LOG_CORE_DEBUG(...)   (LOG_LEVEL <= LOG_LEVEL_DEBUG) ? ::Helios::Log::GetCoreLogger()->debug(__VA_ARGS__)      : (void)0
+#define LOG_CORE_INFO(...)    (LOG_LEVEL <= LOG_LEVEL_INFO)  ? ::Helios::Log::GetCoreLogger()->info(__VA_ARGS__)       : (void)0
+#define LOG_CORE_WARN(...)    (LOG_LEVEL <= LOG_LEVEL_WARN)  ? ::Helios::Log::GetCoreLogger()->warn(__VA_ARGS__)       : (void)0
+#define LOG_CORE_ERROR(...)   (LOG_LEVEL <= LOG_LEVEL_ERROR) ? ::Helios::Log::GetCoreLogger()->error(__VA_ARGS__)      : (void)0
+#define LOG_CORE_FATAL(...)   (LOG_LEVEL <= LOG_LEVEL_FATAL) ? ::Helios::Log::GetCoreLogger()->critical(__VA_ARGS__)   : (void)0
 
 // Logging macros for Application
-#define LOG_TRACE(...)      (LOG_LEVEL <= LOG_LEVEL_TRACE) ? ::Helios::Log::GetAppLogger()->trace(__VA_ARGS__)     : (void)0
-#define LOG_DEBUG(...)      (LOG_LEVEL <= LOG_LEVEL_DEBUG) ? ::Helios::Log::GetAppLogger()->debug(__VA_ARGS__)     : (void)0
-#define LOG_INFO(...)       (LOG_LEVEL <= LOG_LEVEL_INFO)  ? ::Helios::Log::GetAppLogger()->info(__VA_ARGS__)      : (void)0
-#define LOG_WARN(...)       (LOG_LEVEL <= LOG_LEVEL_WARN)  ? ::Helios::Log::GetAppLogger()->warn(__VA_ARGS__)      : (void)0
-#define LOG_ERROR(...)      (LOG_LEVEL <= LOG_LEVEL_ERROR) ? ::Helios::Log::GetAppLogger()->error(__VA_ARGS__)     : (void)0
-#define LOG_FATAL(...)      (LOG_LEVEL <= LOG_LEVEL_FATAL) ? ::Helios::Log::GetAppLogger()->critical(__VA_ARGS__)  : (void)0
+#define LOG_TRACE(...)        (LOG_LEVEL <= LOG_LEVEL_TRACE) ? ::Helios::Log::GetAppLogger()->trace(__VA_ARGS__)       : (void)0
+#define LOG_DEBUG(...)        (LOG_LEVEL <= LOG_LEVEL_DEBUG) ? ::Helios::Log::GetAppLogger()->debug(__VA_ARGS__)       : (void)0
+#define LOG_INFO(...)         (LOG_LEVEL <= LOG_LEVEL_INFO)  ? ::Helios::Log::GetAppLogger()->info(__VA_ARGS__)        : (void)0
+#define LOG_WARN(...)         (LOG_LEVEL <= LOG_LEVEL_WARN)  ? ::Helios::Log::GetAppLogger()->warn(__VA_ARGS__)        : (void)0
+#define LOG_ERROR(...)        (LOG_LEVEL <= LOG_LEVEL_ERROR) ? ::Helios::Log::GetAppLogger()->error(__VA_ARGS__)       : (void)0
+#define LOG_FATAL(...)        (LOG_LEVEL <= LOG_LEVEL_FATAL) ? ::Helios::Log::GetAppLogger()->critical(__VA_ARGS__)    : (void)0
 
 // Logging macros for GLFW
-#define LOG_GLFW_DEBUG(...) (LOG_LEVEL <= LOG_LEVEL_DEBUG) ? ::Helios::Log::GetGLFWLogger()->debug(__VA_ARGS__)    : (void)0
-#define LOG_GLFW_ERROR(...) (LOG_LEVEL <= LOG_LEVEL_ERROR) ? ::Helios::Log::GetGLFWLogger()->error(__VA_ARGS__)    : (void)0
+#define LOG_GLFW_DEBUG(...)   (LOG_LEVEL <= LOG_LEVEL_DEBUG) ? ::Helios::Log::GetGLFWLogger()->debug(__VA_ARGS__)      : (void)0
+#define LOG_GLFW_ERROR(...)   (LOG_LEVEL <= LOG_LEVEL_ERROR) ? ::Helios::Log::GetGLFWLogger()->error(__VA_ARGS__)      : (void)0
+
+// Logging macros for Renderer
+#define LOG_RENDER_DEBUG(...) (LOG_LEVEL <= LOG_LEVEL_DEBUG) ? ::Helios::Log::GetRenderLogger()->debug(__VA_ARGS__)    : (void)0
+#define LOG_RENDER_ERROR(...) (LOG_LEVEL <= LOG_LEVEL_ERROR) ? ::Helios::Log::GetRenderLogger()->error(__VA_ARGS__)    : (void)0
 
 // ASSERT macros
 #if HE_LOG_ASSERTS_ENABLED

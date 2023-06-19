@@ -7,58 +7,28 @@
 
 namespace Helios {
 
-	/*
-	severity:
-	VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT = 0x00000001,
-	VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT = 0x00000010,
-	VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT = 0x00000100,
-	VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT = 0x00001000,
 
-	type:
-	VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT = 0x00000001,
-	VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT = 0x00000002,
-	VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT = 0x00000004,
-	VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT = 0x00000008,
-
-	typedef struct VkDebugUtilsMessengerCallbackDataEXT {
-	VkStructureType                              sType;
-	const void*                                  pNext;
-	VkDebugUtilsMessengerCallbackDataFlagsEXT    flags;
-	const char*                                  pMessageIdName;
-	int32_t                                      messageIdNumber;
-	const char*                                  pMessage;
-	uint32_t                                     queueLabelCount;
-	const VkDebugUtilsLabelEXT*                  pQueueLabels;
-	uint32_t                                     cmdBufLabelCount;
-	const VkDebugUtilsLabelEXT*                  pCmdBufLabels;
-	uint32_t                                     objectCount;
-	const VkDebugUtilsObjectNameInfoEXT*         pObjects;
-	*/
 	VKAPI_ATTR VkBool32 VKAPI_CALL VKDebugCallback(
+		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT
 		VkDebugUtilsMessageSeverityFlagBitsEXT severity,
+		// VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT
 		VkDebugUtilsMessageTypeFlagBitsEXT type,
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 		void* pUserData)
 	{
-		std::string severity_str = "Unknown";
-		if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT) severity_str = "Verbose";
-		if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)    severity_str = "Info";
-		if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) severity_str = "Warning";
-		if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)   severity_str = "Error";
-
-		std::string type_str = "Unknown";
-		if (type & VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT)                type_str = "General";
-		if (type & VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT)             type_str = "Validation";
-		if (type & VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)            type_str = "Performance";
-		if (type & VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT) type_str = "DevAddrBinding";
-
 		if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
 			LOG_RENDER_TRACE(pCallbackData->pMessage);
-		if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
+		else if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
 			LOG_RENDER_INFO(pCallbackData->pMessage);
-		if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+		else if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
 			LOG_RENDER_WARN(pCallbackData->pMessage);
-		if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+		else if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
 			LOG_RENDER_ERROR(pCallbackData->pMessage);
 
 		return VK_FALSE;
@@ -94,15 +64,15 @@ namespace Helios {
 
 	void VKRendererAPI::CreateInstance()
 	{
-		// Get Vukan versions
+		// Get Vulkan versions
 		uint32_t vkVer;
 		vkEnumerateInstanceVersion(&vkVer);
-		LOG_RENDER_DEBUG("Sys-Supported vulkan version: {}.{}.{}.{}",
+		LOG_RENDER_DEBUG("Systems supported vulkan version: {}.{}.{}.{}",
 			VK_API_VERSION_VARIANT(vkVer),
 			VK_API_VERSION_MAJOR(vkVer),
 			VK_API_VERSION_MINOR(vkVer),
 			VK_API_VERSION_PATCH(vkVer));
-		LOG_RENDER_DEBUG("App-Supported vulkan version: {}.{}.{}.{}",
+		LOG_RENDER_DEBUG("Engines supported vulkan version: {}.{}.{}.{}",
 			VK_API_VERSION_VARIANT(VK_HEADER_VERSION_COMPLETE),
 			VK_API_VERSION_MAJOR(VK_HEADER_VERSION_COMPLETE),
 			VK_API_VERSION_MINOR(VK_HEADER_VERSION_COMPLETE),

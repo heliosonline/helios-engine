@@ -27,11 +27,17 @@ function LibHeliosEngine()
 --	LibLuaHelper{}
 --	VendorGlad{}
 	VendorGlfw{}
---	VendorGlm{}
+	VendorGlm{}
 --	VendorImgui{}
 --	VendorLua{}
 	VendorSpdlog{}
 --	VendorStb{}
+
+	-- renderer support
+	VendorDirectX{}
+	VendorMetal{}
+	VendorVulkan{}
+	VendorOpenGL{}
 
 	-- the engine itself
 	includedirs "%{wks.location}/source/engine/source"
@@ -49,40 +55,19 @@ function VendorVulkan()
 		includedirs "%VULKAN_SDK%/Include"
 		libdirs "%VULKAN_SDK%/Lib"
 		links "vulkan-1"
-
-		defines "BUILDWITH_RENDERER_VULKAN"
-		files {
-			"source/Platform/Renderer/Vulkan/**.h",
-			"source/Platform/Renderer/Vulkan/**.cpp",
-		}
 	end
 end
 
 
 function VendorOpenGL()
---	defines "BUILDWITH_RENDERER_OPENGL"
---	files {
---		"source/Platform/Renderer/OpenGL/**.h",
---		"source/Platform/Renderer/OpenGL/**.cpp",
---	}
 end
 
 
 function VendorMetal()
---	defines "BUILDWITH_RENDERER_METAL"
---	files {
---		"source/Platform/Renderer/Metal/**.h",
---		"source/Platform/Renderer/Metal/**.cpp",
---	}
 end
 
 
 function VendorDirectX()
---	defines "BUILDWITH_RENDERER_DIRECTX"
---	files {
---		"source/Platform/Renderer/DirectX/**.h",
---		"source/Platform/Renderer/DirectX/**.cpp",
---	}
 end
 
 
@@ -110,9 +95,9 @@ function VendorGlfw()
 end
 
 
---function VendorGlm()
---	includedirs "%{wks.location}/Source/Vendor/glm"
---end
+function VendorGlm()
+	includedirs "%{wks.location}/vendor/glm"
+end
 
 
 --function VendorImgui()

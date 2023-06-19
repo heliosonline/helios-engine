@@ -49,6 +49,16 @@ namespace Helios {
 		LOG_CORE_INFO("Logging started.");
 
 		LOG_CORE_DEBUG("Working path: {0}", m_Specification.WorkingDirectory);
+		LOG_CORE_INFO("Engine-Version: {}.{}.{}.{}",
+			HE_VERSION_RESERVED(HE_VERSION),
+			HE_VERSION_MAJOR(HE_VERSION),
+			HE_VERSION_MINOR(HE_VERSION),
+			HE_VERSION_PATCH(HE_VERSION));
+		LOG_CORE_INFO("Application-Version: {}.{}.{}.{}",
+			HE_VERSION_RESERVED(m_Specification.Version),
+			HE_VERSION_MAJOR(m_Specification.Version),
+			HE_VERSION_MINOR(m_Specification.Version),
+			HE_VERSION_PATCH(m_Specification.Version));
 
 		LOG_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;

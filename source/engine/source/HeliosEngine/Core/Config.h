@@ -11,6 +11,8 @@ namespace Helios {
 		static bool Read();
 		static bool Update();
 
+		static std::string Get(const std::string& key, const std::string& default_value);
+
 		static std::unordered_map<std::string, std::string> Data;
 	};
 

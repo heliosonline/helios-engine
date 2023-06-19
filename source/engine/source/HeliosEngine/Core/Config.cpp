@@ -52,7 +52,7 @@ namespace Helios {
 		std::ofstream file(s_ConfigFile, std::ios::out | std::ios::trunc);
 		if (file.is_open())
 		{
-			for (auto kv : Data)
+			for (auto& kv : Data)
 				file << kv.first << '=' << kv.second << '\n';
 			file.close();
 
@@ -60,6 +60,15 @@ namespace Helios {
 		}
 
 		return false;
+	}
+
+
+	std::string Config::Get(const std::string& key, const std::string& default_value)
+	{
+		if (Data.contains(key))
+			return Data[key];
+		else
+			return default_value;
 	}
 
 

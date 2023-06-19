@@ -1,5 +1,15 @@
 #pragma once
 
+#ifdef BUILDWITH_RENDERER_DIRECTX
+#endif
+#ifdef BUILDWITH_RENDERER_METAL
+#endif
+#ifdef BUILDWITH_RENDERER_VULKAN
+#	include <vulkan/vulkan.hpp>
+#endif
+#ifdef BUILDWITH_RENDERER_OPENGL
+#endif
+
 
 namespace Helios {
 
@@ -42,6 +52,7 @@ namespace Helios {
 		};
 	public:
 		virtual void Init() = 0;
+		virtual void Shutdown() = 0;
 
 		inline static API GetAPI() { return s_API; }
 

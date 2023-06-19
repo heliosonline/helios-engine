@@ -37,6 +37,8 @@ namespace Helios {
 	{
 		// Name/Title of Application
 		std::string Name;
+		// Version of Application
+		uint32_t Version;
 		// Base path for FileIO
 		std::string WorkingDirectory;
 		// Command Line Arguments

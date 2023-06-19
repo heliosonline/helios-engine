@@ -1,6 +1,10 @@
 #pragma once
 
 
+// Version
+#include "HeliosEngine/HeliosVersion.h"
+
+
 // Configuration
 #include "HeliosEngine/HeliosEngineConfig.h"
 
@@ -37,8 +41,14 @@
 #include <unordered_set>
 
 
-// Libraries
-//#include <glm/glm.hpp>
+// Libraries (GLM)
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+//#include <glm/gtc/matrix_transform.hpp>
+//#include <glm/gtc/type_ptr.hpp>
+
+// Libraries (other)
 //#include <Common/Misc.h>
 
 

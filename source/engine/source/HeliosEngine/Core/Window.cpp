@@ -48,10 +48,10 @@ namespace Helios {
 
 		if (s_GLFWWindowCount == 0)
 		{
-			LOG_CORE_DEBUG("GLFW Version: {0}", glfwGetVersionString());
+			LOG_GLFW_DEBUG("GLFW Version: {0}", glfwGetVersionString());
 
 			int success = glfwInit();
-			LOG_CORE_ASSERT(success, "Could not initialize GLFW!");
+			LOG_GLFW_ASSERT(success, "Could not initialize GLFW!");
 
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
@@ -59,7 +59,13 @@ namespace Helios {
 		#if defined(BUILD_DEBUG) && defined(BUILDWITH_RENDERER_OPENGL)
 			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_CONTEXT_DEBUG, GLFW_TRUE);
-			LOG_CORE_DEBUG("GLFW using debug mode context for OpenGL (hint)");
+			LOG_GLFW_DEBUG("GLFW using debug mode context for OpenGL (hint)");
+		#endif
+
+		// Prevent GLFW from creating an OpenGL context
+		#if defined(BUILDWITH_RENDERER_VULKAN)
+			if (Renderer::GetAPI() == RendererAPI::API::Vulkan)
+				glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		#endif
 
 //		{ // debug
@@ -82,7 +88,11 @@ namespace Helios {
 //			}
 //		} // debug
 
+		// setup the window
 		m_Window = glfwCreateWindow((int)spec.Width, (int)spec.Height, m_Data.Title.c_str(), nullptr, nullptr);
+		// glfwSetWindowIcon(GLFWwindow* window, int count, const GLFWimage* images);
+		// glfwSetWindowPos(GLFWwindow* window, int xpos, int ypos);
+		LOG_GLFW_ASSERT(m_Window, "Window creation failed!");
 		++s_GLFWWindowCount;
 
 //		m_Context = GraphicsContext::Create(m_Window);

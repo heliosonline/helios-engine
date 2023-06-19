@@ -28,6 +28,7 @@ Helios::Application* Helios::CreateApplication(Helios::ApplicationCommandLineArg
 {
 	ApplicationSpecification spec;
 	spec.Name = "Helios-Sandbox";
+	spec.Version = HE_MAKE_VERSION(0, 0, 1, 0);
 	spec.CommandLineArgs = args;
 	spec.hints |= Helios::Hints::HINT_USE_EXEPATH_AS_CWD;
 	spec.logfile = "Helios-Sandbox.log";

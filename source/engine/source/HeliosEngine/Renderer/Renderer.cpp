@@ -8,14 +8,14 @@ namespace Helios {
 
 
 //	Scope<Renderer::SceneData> Renderer::s_SceneData = CreateScope<Renderer::SceneData>();
+	Scope<RendererAPI> Renderer::s_RendererAPI = RendererAPI::Create();
 
 
 	void Renderer::Init()
 	{
 		HE_PROFILER_FUNCTION();
 
-//		RenderCommand::Init();
-//		Renderer2D::Init();
+		s_RendererAPI->Init();
 	}
 
 
@@ -23,7 +23,7 @@ namespace Helios {
 	{
 		HE_PROFILER_FUNCTION();
 
-//		Renderer2D::Shutdown();
+		s_RendererAPI->Shutdown();
 	}
 
 

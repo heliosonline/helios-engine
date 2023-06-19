@@ -69,16 +69,25 @@ namespace Helios {
 // Logging macros for GLFW
 #define LOG_GLFW_DEBUG(...)   (LOG_LEVEL <= LOG_LEVEL_DEBUG) ? ::Helios::Log::GetGLFWLogger()->debug(__VA_ARGS__)      : (void)0
 #define LOG_GLFW_ERROR(...)   (LOG_LEVEL <= LOG_LEVEL_ERROR) ? ::Helios::Log::GetGLFWLogger()->error(__VA_ARGS__)      : (void)0
+#define LOG_GLFW_FATAL(...)   (LOG_LEVEL <= LOG_LEVEL_FATAL) ? ::Helios::Log::GetGLFWLogger()->critical(__VA_ARGS__)   : (void)0
 
 // Logging macros for Renderer
+#define LOG_RENDER_TRACE(...) (LOG_LEVEL <= LOG_LEVEL_TRACE) ? ::Helios::Log::GetRenderLogger()->trace(__VA_ARGS__)    : (void)0
 #define LOG_RENDER_DEBUG(...) (LOG_LEVEL <= LOG_LEVEL_DEBUG) ? ::Helios::Log::GetRenderLogger()->debug(__VA_ARGS__)    : (void)0
+#define LOG_RENDER_INFO(...)  (LOG_LEVEL <= LOG_LEVEL_INFO)  ? ::Helios::Log::GetRenderLogger()->info(__VA_ARGS__)     : (void)0
+#define LOG_RENDER_WARN(...)  (LOG_LEVEL <= LOG_LEVEL_WARN)  ? ::Helios::Log::GetRenderLogger()->warn(__VA_ARGS__)     : (void)0
 #define LOG_RENDER_ERROR(...) (LOG_LEVEL <= LOG_LEVEL_ERROR) ? ::Helios::Log::GetRenderLogger()->error(__VA_ARGS__)    : (void)0
+#define LOG_RENDER_FATAL(...) (LOG_LEVEL <= LOG_LEVEL_FATAL) ? ::Helios::Log::GetRenderLogger()->critical(__VA_ARGS__) : (void)0
 
 // ASSERT macros
 #if HE_LOG_ASSERTS_ENABLED
-#	define LOG_CORE_ASSERT(x, ...) { if(!(x)) { LOG_CORE_FATAL("Assertion failed: {0}", __VA_ARGS__); DebugBreak(); } }
-#	define LOG_ASSERT(x, ...)      { if(!(x)) { LOG_FATAL("Assertion failed: {0}", __VA_ARGS__); DebugBreak(); } }
+#	define LOG_CORE_ASSERT(x, ...)   { if(!(x)) { LOG_CORE_FATAL("Assertion failed: {0}", __VA_ARGS__); DebugBreak(); } }
+#	define LOG_GLFW_ASSERT(x, ...)   { if(!(x)) { LOG_GLFW_FATAL("Assertion failed: {0}", __VA_ARGS__); DebugBreak(); } }
+#	define LOG_RENDER_ASSERT(x, ...) { if(!(x)) { LOG_RENDER_FATAL("Assertion failed: {0}", __VA_ARGS__); DebugBreak(); } }
+#	define LOG_ASSERT(x, ...)        { if(!(x)) { LOG_FATAL("Assertion failed: {0}", __VA_ARGS__); DebugBreak(); } }
 #else
 #	define LOG_CORE_ASSERT(x, ...)
+#	define LOG_GLFW_ASSERT(x, ...)
+#	define LOG_RENDER_ASSERT(x, ...)
 #	define LOG_ASSERT(x, ...)
 #endif

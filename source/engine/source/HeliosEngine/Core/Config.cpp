@@ -7,6 +7,8 @@ namespace Helios {
 
 
 	static std::string s_ConfigFile;
+	static bool s_Changed = false;
+
 	std::unordered_map<std::string, std::string> Config::Data = {};
 
 
@@ -47,8 +49,11 @@ namespace Helios {
 	}
 
 
-	bool Config::Update()
+	bool Config::Save()
 	{
+		if (!s_Changed)
+			return true;
+
 		std::ofstream file(s_ConfigFile, std::ios::out | std::ios::trunc);
 		if (file.is_open())
 		{
@@ -56,6 +61,7 @@ namespace Helios {
 				file << kv.first << '=' << kv.second << '\n';
 			file.close();
 
+			s_Changed = false;
 			return true;
 		}
 
@@ -69,6 +75,13 @@ namespace Helios {
 			return Data[key];
 		else
 			return default_value;
+	}
+
+
+	void Config::Set(const std::string& key, const std::string& value)
+	{
+		Data[key] = value;
+		s_Changed = true;
 	}
 
 

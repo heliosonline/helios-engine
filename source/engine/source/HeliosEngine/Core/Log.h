@@ -44,7 +44,7 @@ namespace Helios {
 // minimal log level
 #if !defined(LOG_LEVEL)
 #	ifdef BUILD_DEBUG
-#		define LOG_LEVEL LOG_LEVEL_DEBUG
+#		define LOG_LEVEL LOG_LEVEL_TRACE
 #	else
 #		define LOG_LEVEL LOG_LEVEL_INFO
 #	endif

@@ -29,19 +29,19 @@ namespace Helios {
 		{
 		case RendererAPI::API::None: LOG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
 
-			// related on build options and platform
-#ifdef BUILDWITH_RENDERER_DIRECTX
-		case RendererAPI::API::DirectX: return CreateScope<DXRendererAPI>();
-#endif
-#ifdef BUILDWITH_RENDERER_METAL
-		case RendererAPI::API::Metal: return CreateScope<MTRendererAPI>();
-#endif
-#ifdef BUILDWITH_RENDERER_VULKAN
-		case RendererAPI::API::Vulkan: return CreateScope<VKRendererAPI>();
-#endif
-#ifdef BUILDWITH_RENDERER_OPENGL
-		case RendererAPI::API::OpenGL: return CreateScope<GLRendererAPI>();
-#endif
+		// related on build options and platform
+#		ifdef BUILDWITH_RENDERER_DIRECTX
+			case RendererAPI::API::DirectX: return CreateScope<DXRendererAPI>();
+#		endif
+#		ifdef BUILDWITH_RENDERER_METAL
+			case RendererAPI::API::Metal: return CreateScope<MTRendererAPI>();
+#		endif
+#		ifdef BUILDWITH_RENDERER_VULKAN
+			case RendererAPI::API::Vulkan: return CreateScope<VKRendererAPI>();
+#		endif
+#		ifdef BUILDWITH_RENDERER_OPENGL
+			case RendererAPI::API::OpenGL: return CreateScope<GLRendererAPI>();
+#		endif
 
 		default: LOG_CORE_ASSERT(false, "Unknown RendererAPI!"); return nullptr;
 		}

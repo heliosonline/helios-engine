@@ -25,6 +25,9 @@ namespace Helios {
 			LOG_CORE_ASSERT(index < Count, "");
 			return Args[index];
 		}
+
+		bool Check(std::string arg);
+		std::string Get(std::string arg);
 	};
 
 	enum Hints

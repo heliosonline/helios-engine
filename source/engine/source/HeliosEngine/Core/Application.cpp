@@ -28,13 +28,48 @@ namespace Helios {
 	}
 
 
+	bool ApplicationCommandLineArgs::Check(std::string arg)
+	{
+		for (auto x = 1; x < Count; x++)
+		{
+			size_t start = std::string(Args[x]).find_first_not_of("/-");
+			std::string trimmed = std::string(Args[x]).substr(start);
+			trimmed = trimmed.substr(0, trimmed.find_first_of('='));
+
+			std::transform(trimmed.begin(), trimmed.end(), trimmed.begin(),
+				[](unsigned char c) { return std::tolower(c); } );
+
+			if (trimmed == arg)
+				return true;
+		}
+		return false;
+	}
+
+	std::string ApplicationCommandLineArgs::Get(std::string arg)
+	{
+		for (auto x = 1; x < Count; x++)
+		{
+			size_t start = std::string(Args[x]).find_first_not_of("/-");
+			std::string trimmed = std::string(Args[x]).substr(start);
+
+			std::transform(trimmed.begin(), trimmed.end(), trimmed.begin(),
+				[](unsigned char c) { return std::tolower(c); });
+
+			std::string key = trimmed.substr(0, trimmed.find_first_of('='));
+			if (key.compare(arg) == 0)
+				return trimmed.substr(trimmed.find_first_of('=') + 1);
+		}
+		return "";
+	}
+
+
 	Application* Application::s_Instance = nullptr;
 
 
 	Application::Application(const ApplicationSpecification& specification)
 		: m_Specification(specification)
 	{
-		// set working directory
+		// Init working directory
 		if (!m_Specification.WorkingDirectory.empty())
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
 		if (m_Specification.hints & Hints::HINT_USE_CWD)
@@ -45,9 +80,11 @@ namespace Helios {
 			std::filesystem::current_path(m_Specification.WorkingDirectory);
 		}
 
+		// Init logging
 		Log::Init(m_Specification.logfile, m_Specification.WorkingDirectory);
 		LOG_CORE_INFO("Logging started.");
 
+		// Log versions
 		LOG_CORE_DEBUG("Working path: {0}", m_Specification.WorkingDirectory);
 		LOG_CORE_INFO("Engine-Version: {}.{}.{}.{}",
 			HE_VERSION_RESERVED(HE_VERSION),
@@ -60,15 +97,26 @@ namespace Helios {
 			HE_VERSION_MINOR(m_Specification.Version),
 			HE_VERSION_PATCH(m_Specification.Version));
 
+		// Check singleton
 		LOG_CORE_ASSERT(!s_Instance, "Application already exists!");
 		s_Instance = this;
 
+		// Log CmdArgs
+		if (m_Specification.CommandLineArgs.Count > 1)
+		{
+			for (auto x = 1; x < m_Specification.CommandLineArgs.Count; x++)
+				LOG_CORE_INFO("CmdArg[{}] = \"{}\"", x, m_Specification.CommandLineArgs[x]);;
+		}
+
+		// Load config
 		Config::Init(m_Specification.configfile, m_Specification.WorkingDirectory);
 
+		// Init Window/renderer
+		Renderer::Setup();
 		m_Window = Window::Create(WindowSpecification(m_Specification.Name));
 		m_Window->SetEventCallback(HE_BIND_EVENT_FN(Application::OnEvent));
-
 		Renderer::Init();
+
 //		Assets::Init();
 
 //		static std::string inipath = m_Specification.WorkingDirectory;
@@ -80,7 +128,7 @@ namespace Helios {
 
 	Application::~Application()
 	{
-		Config::Update();
+		Config::Save();
 		Renderer::Shutdown();
 
 		LOG_CORE_INFO("Shutdown.");
@@ -201,6 +249,5 @@ namespace Helios {
 
 		return false;
 	}
-
 
 } // namespace Helios

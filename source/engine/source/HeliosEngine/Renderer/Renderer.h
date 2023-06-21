@@ -9,6 +9,7 @@ namespace Helios {
 	class Renderer
 	{
 	public:
+		static void Setup();
 		static void Init();
 		static void Shutdown();
 

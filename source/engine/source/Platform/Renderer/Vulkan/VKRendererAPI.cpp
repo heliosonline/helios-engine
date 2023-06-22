@@ -41,7 +41,11 @@ namespace Helios {
 		LOG_RENDER_DEBUG("Initializing vulkan renderer.");
 
 		CreateInstance();
+		CreateSurface();
+
 		ChoosePhysicalDevice();
+		CreateLogicalDevice();
+		GetQueues();
 	}
 
 
@@ -49,6 +53,13 @@ namespace Helios {
 	{
 		LOG_RENDER_DEBUG("Shutting down vulkan renderer.");
 
+		// Device objects
+		if (m_vkDevice)
+			m_vkDevice.destroy();
+
+		// Instance objects
+		if (m_vkSurface)
+			m_vkInstance.destroySurfaceKHR(m_vkSurface);
 		if (m_vkDebugMessenger)
 			m_vkInstance.destroyDebugUtilsMessengerEXT(m_vkDebugMessenger, nullptr, m_vkLoader);
 		if (m_vkInstance)
@@ -231,6 +242,16 @@ namespace Helios {
 	}
 
 
+	void VKRendererAPI::CreateSurface()
+	{
+		VkSurfaceKHR c_style_suface;
+		if (glfwCreateWindowSurface(m_vkInstance, (GLFWwindow*)Application::Get().GetWindow().GetNativeWindow(), nullptr, &c_style_suface) != VK_SUCCESS)
+			LOG_RENDER_ASSERT(0, "Failed to create surface!");
+
+		m_vkSurface = c_style_suface;
+	}
+
+
 	void VKRendererAPI::ChoosePhysicalDevice()
 	{
 		// Get all devices
@@ -239,6 +260,9 @@ namespace Helios {
 		// Try previous selection
 		if (Config::Get("VulkanPhysDevName").length() and Config::Get("VulkanPhysDevID").length())
 		{
+			LOG_RENDER_TRACE("Previous physical device:");
+			LOG_RENDER_TRACE("- Name: \"{}\"", Config::Get("VulkanPhysDevName"));
+			LOG_RENDER_TRACE("- ID: {}", Config::Get("VulkanPhysDevID"));
 			for (auto d : available)
 			{
 				vk::PhysicalDeviceProperties props = d.getProperties();
@@ -246,8 +270,8 @@ namespace Helios {
 					(Config::Get("VulkanPhysDevID").compare(std::to_string(props.deviceID)) == 0) and
 					IsPhysicalDeviceSuitable(d))
 				{
-					LOG_RENDER_INFO("Selecting previous device: \"{}\"", props.deviceName);
-					m_vkPhysDev = d;
+					LOG_RENDER_INFO("Previous device selected.");
+					m_vkPhysDevice = d;
 					return;
 				}
 			}
@@ -286,12 +310,12 @@ namespace Helios {
 				Config::Set("VulkanPhysDevName", props.deviceName);
 				Config::Set("VulkanPhysDevID", std::to_string(props.deviceID));
 
-				m_vkPhysDev = d;
+				m_vkPhysDevice = d;
 				return;
 			}
 		}
 
-		LOG_RENDER_ASSERT(m_vkPhysDev, "Failed to choose physical device!");
+		LOG_RENDER_ASSERT(m_vkPhysDevice, "Failed to choose physical device!");
 	}
 
 
@@ -304,6 +328,11 @@ namespace Helios {
 
 		// Check if extensions are supported
 		if (!CheckSupportedDeviceExtensions(device, requested))
+			return false;
+
+		// Find suitable queue families
+		QueueFamilyIndices indices = ChooseQueueFamilies(device);
+		if (!indices.complete())
 			return false;
 
 		return true;
@@ -326,6 +355,102 @@ namespace Helios {
 		}
 
 		return required.empty();
+	}
+
+
+	QueueFamilyIndices VKRendererAPI::ChooseQueueFamilies(const vk::PhysicalDevice& device)
+	{
+		QueueFamilyIndices indices;
+		std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
+
+		uint32_t i = 0;
+		for (auto& q : queueFamilies)
+		{
+			if (q.queueFlags & vk::QueueFlagBits::eGraphics)
+				indices.graphicsFamily = i;
+//			if (glfwGetPhysicalDevicePresentationSupport(m_vkInstance, device, i) == GLFW_TRUE)
+			if (device.getSurfaceSupportKHR(i, m_vkSurface))
+				indices.presentFamily = i;
+
+			if (indices.complete())
+				break;
+
+			i++;
+		}
+
+		return indices;
+	}
+
+
+	void VKRendererAPI::CreateLogicalDevice()
+	{
+		// Setup queue
+		QueueFamilyIndices indices = ChooseQueueFamilies(m_vkPhysDevice);
+		std::vector<uint32_t> uniqueIndices;
+		uniqueIndices.push_back(indices.graphicsFamily.value());
+		if (indices.graphicsFamily.value() != indices.presentFamily.value())
+			uniqueIndices.push_back(indices.presentFamily.value());
+		float queuePriority = 1.0f;
+		std::vector<vk::DeviceQueueCreateInfo> QueueInfo;
+		for (uint32_t index : uniqueIndices)
+		{
+			vk::DeviceQueueCreateInfo q = vk::DeviceQueueCreateInfo();
+			{
+				q.setQueueFamilyIndex(index);
+				q.setQueueCount(1);
+				q.setPQueuePriorities(&queuePriority);
+			}
+			QueueInfo.push_back(q);
+		}
+
+		// Setup layers
+		std::vector<const char*> layers;
+		#ifdef BUILD_DEBUG
+			LOG_RENDER_DEBUG("Using the \"VK_LAYER_KHRONOS_validation\" layer.");
+			layers.push_back("VK_LAYER_KHRONOS_validation");
+		#endif
+
+		// Setup extensions
+		std::vector<const char*> extensions;
+
+		// Setup features
+		vk::PhysicalDeviceFeatures DeviceFeatures = vk::PhysicalDeviceFeatures();
+		{
+			//DeviceFeatures.setXYZ...
+		}
+
+		// Setup DeviceInfo
+		vk::DeviceCreateInfo DeviceInfo = vk::DeviceCreateInfo();
+		{
+			// Queue
+			DeviceInfo.setQueueCreateInfoCount((uint32_t)QueueInfo.size());
+			DeviceInfo.setPQueueCreateInfos(QueueInfo.data());
+			// Layer
+			DeviceInfo.setEnabledLayerCount((uint32_t)layers.size());
+			DeviceInfo.setPpEnabledLayerNames(layers.data());
+			// Extensions
+			DeviceInfo.setEnabledExtensionCount((uint32_t)extensions.size());
+			DeviceInfo.setPpEnabledExtensionNames(extensions.data());
+			// Features
+			DeviceInfo.setPEnabledFeatures(&DeviceFeatures);
+		}
+
+		// Create the logical device
+		try {
+			m_vkDevice = m_vkPhysDevice.createDevice(DeviceInfo);
+		}
+		catch (vk::SystemError err) {
+			LOG_RENDER_ASSERT(0, "Failed to create logical device!");
+		}
+	}
+
+
+	void VKRendererAPI::GetQueues()
+	{
+		QueueFamilyIndices indices = ChooseQueueFamilies(m_vkPhysDevice);
+
+		m_vkGraphicsQueue = m_vkDevice.getQueue(indices.graphicsFamily.value(), 0);
+		m_vkPresentQueue = m_vkDevice.getQueue(indices.presentFamily.value(), 0);
 	}
 
 

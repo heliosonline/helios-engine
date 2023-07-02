@@ -24,6 +24,7 @@ namespace Helios {
 
 		HE_EVENT_CLASS_TYPE(WindowResize)
 		HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
+
 	private:
 		unsigned int m_Width, m_Height;
 	};

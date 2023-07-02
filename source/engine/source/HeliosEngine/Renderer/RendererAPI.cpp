@@ -20,8 +20,21 @@
 namespace Helios {
 
 
-	RendererAPI::API RendererAPI::s_API = DEFAULT_RENDERERAPI;
+	RendererAPI::API RendererAPI::s_API = RendererAPI::API::None;
 
+
+	const char* RendererAPI::GetAPIString(API api)
+	{
+		switch (s_API)
+		{
+		case RendererAPI::API::None:    return "None";
+		case RendererAPI::API::DirectX: return "DirectX";
+		case RendererAPI::API::Metal:   return "Metal";
+		case RendererAPI::API::Vulkan:  return "Vulkan";
+		case RendererAPI::API::OpenGL:  return "OpenGL";
+		default: return "Unknown";
+		}
+	}
 
 	Scope<RendererAPI> RendererAPI::Create()
 	{

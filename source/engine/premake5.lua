@@ -34,6 +34,8 @@ project "helios.engine"
 		"source/HeliosEngine/**.cpp",
 		-- dedicated platform detection
 		"source/Platform/PlatformDetection.h",
+		-- assets
+		"assets/**.*"
 	}
 
 
@@ -153,8 +155,8 @@ project "helios.engine"
 --	}
 --
 --
---	postbuildmessage "Copying assets to the target folder..."
---	postbuildcommands {
+	postbuildmessage "Copying assets to the target folder..."
+	postbuildcommands {
 --		"{COPYDIR} %{wks.location}Source/Client/GameEngine/Assets " .. dir_bin .. dir_group .. dir_config .. "Assets",
---		"{COPYDIR} %{prj.location}Assets " .. dir_bin .. dir_group .. dir_config .. "Assets"
---	}
+		"{COPYDIR} \"%{prj.location}assets\" \"" .. dir_bin .. dir_group .. dir_config .. "Assets\""
+	}

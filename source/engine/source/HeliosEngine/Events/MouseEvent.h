@@ -24,6 +24,7 @@ namespace Helios {
 		}
 		HE_EVENT_CLASS_TYPE(MouseMoved)
 		HE_EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+
 	private:
 		float m_MouseX, m_MouseY;
 	};
@@ -47,6 +48,7 @@ namespace Helios {
 
 		HE_EVENT_CLASS_TYPE(MouseScrolled)
 		HE_EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
+
 	private:
 		float m_XOffset, m_YOffset;
 	};
@@ -58,6 +60,7 @@ namespace Helios {
 		MouseCode GetMouseButton() const { return m_Button; }
 
 		HE_EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
+
 	protected:
 		MouseButtonEvent(const MouseCode button)
 			: m_Button(button) {}

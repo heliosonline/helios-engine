@@ -12,10 +12,10 @@ namespace Helios {
 	std::unordered_map<std::string, std::string> Config::Data = {};
 
 
-	bool Config::Init(const std::string filename, const std::string path)
+	bool Config::Init(const std::string filename, const std::string basepath)
 	{
 		s_ConfigFile = std::filesystem::path(
-			(path.empty() ? "" : path + "/") + (filename.empty() ? "config.cfg" : filename)
+			(basepath.empty() ? "" : basepath + "/") + (filename.empty() ? "config.cfg" : filename)
 		).make_preferred().string();
 
 		return Read();

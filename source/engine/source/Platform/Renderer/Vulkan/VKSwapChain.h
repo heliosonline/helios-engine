@@ -8,6 +8,13 @@
 
 namespace Helios {
 
+	struct FrameInfo
+	{
+		vk::Image image;
+		vk::ImageView view;
+	};
+
+
 	class VKSwapChain
 	{
 	public:
@@ -17,7 +24,7 @@ namespace Helios {
 		void Destroy();
 
 	private:
-//		void QuerySupport();
+		//		void QuerySupport();
 		vk::SurfaceFormatKHR ChooseSurfaceFormat();
 		vk::PresentModeKHR ChoosePresentMode();
 		vk::Extent2D ChooseExtent();
@@ -25,8 +32,8 @@ namespace Helios {
 	private:
 		// Native vulkan objects
 		vk::SwapchainKHR m_vkSwapChain;
-		std::vector<vk::Image> m_vkImages;
-		vk::Format m_vkFormat;
+		std::vector<FrameInfo> m_Frames;
+		vk::Format m_vkFormat = {};
 		vk::Extent2D m_vkExtent;
 
 		// Internal data

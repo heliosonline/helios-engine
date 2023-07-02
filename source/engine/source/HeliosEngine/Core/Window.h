@@ -23,6 +23,7 @@ namespace Helios {
 		}
 	};
 
+
 	class Window
 	{
 	public:

@@ -6,10 +6,9 @@
 #include "HeliosEngine/Core/Timer.h"
 #include "HeliosEngine/Core/Timestep.h"
 #include "HeliosEngine/Core/Util.h"
+#include "HeliosEngine/Core/Assets.h"
 
 #include "HeliosEngine/Renderer/Renderer.h"
-
-//#include "HeliosEngine/Core/Assets.h"
 
 //#include <GLFW/glfw3.h>
 //#include <imgui.h>
@@ -111,13 +110,13 @@ namespace Helios {
 		// Load config
 		Config::Init(m_Specification.configfile, m_Specification.WorkingDirectory);
 
+		Assets::Init(m_Specification.WorkingDirectory);
+
 		// Init Window/renderer
 		Renderer::Setup();
 		m_Window = Window::Create(WindowSpecification(m_Specification.Name));
 		m_Window->SetEventCallback(HE_BIND_EVENT_FN(Application::OnEvent));
 		Renderer::Init();
-
-//		Assets::Init();
 
 //		static std::string inipath = m_Specification.WorkingDirectory;
 //		inipath += "/imgui.ini";

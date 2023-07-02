@@ -18,6 +18,8 @@ namespace Helios {
 
 	void VKSwapChain::Create()
 	{
+		LOG_RENDER_DEBUG("Creating vulkan swapchain...");
+
 		// Get some capabilities
 		vk::SurfaceCapabilitiesKHR capabilities = m_Device->GetPhysicalDevice().getSurfaceCapabilitiesKHR(m_Instance->GetSurface());
 		QueueFamilyIndices indices = m_Device->FindQueueFamilies(m_Device->GetPhysicalDevice());
@@ -26,26 +28,26 @@ namespace Helios {
 		// Setup CreateInfo
 		vk::SwapchainCreateInfoKHR createInfo = vk::SwapchainCreateInfoKHR();
 		{
-			createInfo.setSurface(m_Instance->GetSurface());
-			createInfo.setMinImageCount(std::min(capabilities.minImageCount + 1, capabilities.maxImageCount ? capabilities.maxImageCount : UINT32_MAX));
-			createInfo.setImageFormat(ChooseSurfaceFormat().format);
-			createInfo.setImageColorSpace(ChooseSurfaceFormat().colorSpace);
-			createInfo.setImageExtent(ChooseExtent());
-			createInfo.setImageArrayLayers(1);
-			createInfo.setImageUsage(vk::ImageUsageFlagBits::eColorAttachment);
-			createInfo.setPreTransform(capabilities.currentTransform);
-			createInfo.setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque);
-			createInfo.setPresentMode(ChoosePresentMode());
-			createInfo.setClipped(VK_TRUE);
+			createInfo.surface = m_Instance->GetSurface();
+			createInfo.minImageCount = std::min(capabilities.minImageCount + 1, capabilities.maxImageCount ? capabilities.maxImageCount : UINT32_MAX);
+			createInfo.imageFormat = ChooseSurfaceFormat().format;
+			createInfo.imageColorSpace = ChooseSurfaceFormat().colorSpace;
+			createInfo.imageExtent = ChooseExtent();
+			createInfo.imageArrayLayers = 1;
+			createInfo.imageUsage = vk::ImageUsageFlagBits::eColorAttachment;
+			createInfo.preTransform = capabilities.currentTransform;
+			createInfo.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque;
+			createInfo.presentMode = ChoosePresentMode();
+			createInfo.clipped = VK_TRUE;
 
 			if (indices.graphicsFamily.value() != indices.presentFamily.value())
 			{
-				createInfo.setImageSharingMode(vk::SharingMode::eConcurrent);
-				createInfo.setQueueFamilyIndexCount(2);
-				createInfo.setPQueueFamilyIndices(queueFamilyIndices);
+				createInfo.imageSharingMode = vk::SharingMode::eConcurrent;
+				createInfo.queueFamilyIndexCount = 2;
+				createInfo.pQueueFamilyIndices = queueFamilyIndices;
 			}
 			else
-				createInfo.setImageSharingMode(vk::SharingMode::eExclusive);
+				createInfo.imageSharingMode = vk::SharingMode::eExclusive;
 		}
 
 		// Create the swapchain
@@ -55,14 +57,47 @@ namespace Helios {
 		catch (vk::SystemError err) {
 			LOG_RENDER_ASSERT(0, "Failed to create swapchain!");
 		}
-		m_vkImages = m_Device->GetLogicalDevice().getSwapchainImagesKHR(m_vkSwapChain);
+
+		// Save some data
 		m_vkFormat = createInfo.imageFormat;
 		m_vkExtent = createInfo.imageExtent;
+
+		// Create views
+		std::vector<vk::Image> images = m_Device->GetLogicalDevice().getSwapchainImagesKHR(m_vkSwapChain);
+		m_Frames.resize(images.size());
+		for (auto i = 0; i < images.size(); ++i)
+		{
+			// Setup ViewInfo
+			vk::ImageViewCreateInfo viewInfo = vk::ImageViewCreateInfo();
+			{
+				viewInfo.image = images[i];
+				viewInfo.viewType = vk::ImageViewType::e2D;
+				vk::ComponentMapping comp;
+				comp.r = vk::ComponentSwizzle::eIdentity;
+				comp.g = vk::ComponentSwizzle::eIdentity;
+				comp.b = vk::ComponentSwizzle::eIdentity;
+				comp.a = vk::ComponentSwizzle::eIdentity;
+				viewInfo.components = comp;
+				vk::ImageSubresourceRange range;
+				range.aspectMask = vk::ImageAspectFlagBits::eColor;
+				range.baseMipLevel = 0;
+				range.levelCount = 1;
+				range.baseArrayLayer = 0;
+				range.layerCount = 1;
+				viewInfo.subresourceRange = range;
+				viewInfo.format = m_vkFormat;
+			}
+			// Create
+			m_Frames[i].image = images[i];
+			m_Frames[i].view = m_Device->GetLogicalDevice().createImageView(viewInfo);
+		}
 	}
 
 
 	void VKSwapChain::Destroy()
 	{
+		for (auto frame : m_Frames)
+			m_Device->GetLogicalDevice().destroyImageView(frame.view);
 		if (m_vkSwapChain)
 			m_Device->GetLogicalDevice().destroySwapchainKHR(m_vkSwapChain);
 	}

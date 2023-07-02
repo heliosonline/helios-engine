@@ -13,6 +13,7 @@ namespace Helios {
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 
+
 	enum EventCategory
 	{
 		None = 0,
@@ -69,6 +70,7 @@ namespace Helios {
 			}
 			return false;
 		}
+
 	private:
 		Event& m_Event;
 	};

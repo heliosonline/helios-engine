@@ -45,8 +45,10 @@ namespace Helios {
 		virtual void Init() = 0;
 		virtual void Shutdown() = 0;
 
-		inline static API GetAPI() { return s_API; }
-		inline static void SetAPI(API api) { s_API = api; }
+		static API GetAPI() { return s_API; }
+		static void SetAPI(API api) { s_API = api; }
+
+		static const char* GetAPIString(API api = GetAPI());
 
 		static Scope<RendererAPI> Create();
 

@@ -40,6 +40,8 @@ namespace Helios {
 
 	void VKInstance::Create()
 	{
+		LOG_RENDER_DEBUG("Creating vulkan instance...");
+
 		// Get vulkan versions
 		uint32_t vkVer;
 		vkEnumerateInstanceVersion(&vkVer);
@@ -57,14 +59,11 @@ namespace Helios {
 		// Setup AppInfo
 		vk::ApplicationInfo appInfo = vk::ApplicationInfo();
 		{
-			// app info
-			appInfo.setPApplicationName(Application::Get().GetSpecification().Name.c_str());
-			appInfo.setApplicationVersion(Application::Get().GetSpecification().Version);
-			// engine info
-			appInfo.setPEngineName("HeliosEngine");
-			appInfo.setEngineVersion(HE_VERSION);
-			// requested API version
-			appInfo.setApiVersion(VK_API_VERSION_1_1);
+			appInfo.pApplicationName = Application::Get().GetSpecification().Name.c_str();
+			appInfo.applicationVersion = Application::Get().GetSpecification().Version;
+			appInfo.pEngineName = "HeliosEngine";
+			appInfo.engineVersion = HE_VERSION;
+			appInfo.apiVersion = VK_API_VERSION_1_1;
 		}
 
 		// Setup list of layers
@@ -92,14 +91,11 @@ namespace Helios {
 		// Setup InstanceInfo
 		vk::InstanceCreateInfo createInfo = vk::InstanceCreateInfo();
 		{
-			// app info
-			createInfo.setPApplicationInfo(&appInfo);
-			// layers
-			createInfo.setEnabledLayerCount(static_cast<uint32_t>(m_ListLayers.size()));
-			createInfo.setPpEnabledLayerNames(m_ListLayers.data());
-			// extensions
-			createInfo.setEnabledExtensionCount(static_cast<uint32_t>(m_ListExtensions.size()));
-			createInfo.setPpEnabledExtensionNames(m_ListExtensions.data());
+			createInfo.pApplicationInfo = &appInfo;
+			createInfo.enabledLayerCount = static_cast<uint32_t>(m_ListLayers.size());
+			createInfo.ppEnabledLayerNames = m_ListLayers.data();
+			createInfo.enabledExtensionCount = static_cast<uint32_t>(m_ListExtensions.size());
+			createInfo.ppEnabledExtensionNames = m_ListExtensions.data();
 		}
 
 		// Create the vulkan instance
@@ -192,17 +188,17 @@ namespace Helios {
 	{
 		vk::DebugUtilsMessengerCreateInfoEXT createInfo = vk::DebugUtilsMessengerCreateInfoEXT();
 		{
-			createInfo.setMessageSeverity(
+			createInfo.messageSeverity =
 				vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
 				vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo |
 				vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning |
-				vk::DebugUtilsMessageSeverityFlagBitsEXT::eError);
-			createInfo.setMessageType(
+				vk::DebugUtilsMessageSeverityFlagBitsEXT::eError;
+			createInfo.messageType =
 				vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
 				vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation |
 				vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
-				vk::DebugUtilsMessageTypeFlagBitsEXT::eDeviceAddressBinding);
-			createInfo.setPfnUserCallback((PFN_vkDebugUtilsMessengerCallbackEXT)VKDebugCallback);
+				vk::DebugUtilsMessageTypeFlagBitsEXT::eDeviceAddressBinding;
+			createInfo.pfnUserCallback = (PFN_vkDebugUtilsMessengerCallbackEXT)VKDebugCallback;
 		}
 
 		m_vkDebugMessenger = m_vkInstance.createDebugUtilsMessengerEXT(createInfo, nullptr, m_vkLoader);

@@ -5,6 +5,7 @@
 #include "Platform/Renderer/Vulkan/VKInstance.h"
 #include "Platform/Renderer/Vulkan/VKDevice.h"
 #include "Platform/Renderer/Vulkan/VKSwapChain.h"
+#include "Platform/Renderer/Vulkan/VKPipeline.h"
 
 
 namespace Helios {
@@ -21,6 +22,7 @@ namespace Helios {
 		Ref<VKInstance> m_Instance;
 		Ref<VKDevice> m_Device;
 		Ref<VKSwapChain> m_SwapChain;
+		Ref<VKPipeline> m_Pipeline;
 	};
 
 

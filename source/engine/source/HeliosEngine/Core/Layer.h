@@ -20,6 +20,7 @@ namespace Helios {
 		virtual void OnEvent(Event& event) {}
 
 		const std::string& GetName() const { return m_DebugName; }
+
 	protected:
 		std::string m_DebugName;
 	};
@@ -45,6 +46,7 @@ namespace Helios {
 		std::vector<Layer*>::reverse_iterator rend() { return m_Layers.rend(); }
 		std::vector<Layer*>::const_reverse_iterator rbegin() const { return m_Layers.rbegin(); }
 		std::vector<Layer*>::const_reverse_iterator rend() const { return m_Layers.rend(); }
+
 	private:
 		std::vector<Layer*> m_Layers;
 		unsigned int m_LayerInsertIndex = 0;

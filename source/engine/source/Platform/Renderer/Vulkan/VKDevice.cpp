@@ -24,9 +24,11 @@ namespace Helios {
 	void VKDevice::Create()
 	{
 		// Pick best suitable physical device
+		LOG_RENDER_DEBUG("Choosing vulkan physical device...");
 		PickPhysicalDevice();
 
 		// Create the logical device
+		LOG_RENDER_DEBUG("Creating vulkan logical device...");
 		CreateLogicalDevice();
 		GetQueues();
 	}
@@ -222,9 +224,9 @@ namespace Helios {
 		{
 			vk::DeviceQueueCreateInfo q = vk::DeviceQueueCreateInfo();
 			{
-				q.setQueueFamilyIndex(index);
-				q.setQueueCount(1);
-				q.setPQueuePriorities(&queuePriority);
+				q.queueFamilyIndex = index;
+				q.queueCount = 1;
+				q.pQueuePriorities = &queuePriority;
 			}
 			QueueInfo.push_back(q);
 		}
@@ -238,17 +240,13 @@ namespace Helios {
 		// Setup DeviceInfo
 		vk::DeviceCreateInfo DeviceInfo = vk::DeviceCreateInfo();
 		{
-			// Queue
-			DeviceInfo.setQueueCreateInfoCount((uint32_t)QueueInfo.size());
-			DeviceInfo.setPQueueCreateInfos(QueueInfo.data());
-			// Layer
-			DeviceInfo.setEnabledLayerCount((uint32_t)m_ListLayers.size());
-			DeviceInfo.setPpEnabledLayerNames(m_ListLayers.data());
-			// Extensions
-			DeviceInfo.setEnabledExtensionCount((uint32_t)m_ListExtensions.size());
-			DeviceInfo.setPpEnabledExtensionNames(m_ListExtensions.data());
-			// Features
-			DeviceInfo.setPEnabledFeatures(&DeviceFeatures);
+			DeviceInfo.queueCreateInfoCount = (uint32_t)QueueInfo.size();
+			DeviceInfo.pQueueCreateInfos = QueueInfo.data();
+			DeviceInfo.enabledLayerCount = (uint32_t)m_ListLayers.size();
+			DeviceInfo.ppEnabledLayerNames = m_ListLayers.data();
+			DeviceInfo.enabledExtensionCount = (uint32_t)m_ListExtensions.size();
+			DeviceInfo.ppEnabledExtensionNames = m_ListExtensions.data();
+			DeviceInfo.pEnabledFeatures = &DeviceFeatures;
 		}
 
 		// Create the logical device

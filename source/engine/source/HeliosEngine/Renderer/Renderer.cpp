@@ -9,7 +9,7 @@
 namespace Helios {
 
 
-	Scope<RendererAPI> Renderer::s_RendererAPI;
+	Ref<RendererAPI> Renderer::s_RendererAPI;
 
 
 	void Renderer::Setup()

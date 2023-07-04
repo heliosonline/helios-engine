@@ -36,7 +36,7 @@ namespace Helios {
 		}
 	}
 
-	Scope<RendererAPI> RendererAPI::Create()
+	Ref<RendererAPI> RendererAPI::Create()
 	{
 		switch (s_API)
 		{
@@ -44,16 +44,16 @@ namespace Helios {
 
 		// related on build options and platform
 #		ifdef BUILDWITH_RENDERER_DIRECTX
-			case RendererAPI::API::DirectX: return CreateScope<DXRendererAPI>();
+			case RendererAPI::API::DirectX: return CreateRef<DXRendererAPI>();
 #		endif
 #		ifdef BUILDWITH_RENDERER_METAL
-			case RendererAPI::API::Metal: return CreateScope<MTRendererAPI>();
+			case RendererAPI::API::Metal: return CreateRef<MTRendererAPI>();
 #		endif
 #		ifdef BUILDWITH_RENDERER_VULKAN
-			case RendererAPI::API::Vulkan: return CreateScope<VKRendererAPI>();
+			case RendererAPI::API::Vulkan: return CreateRef<VKRendererAPI>();
 #		endif
 #		ifdef BUILDWITH_RENDERER_OPENGL
-			case RendererAPI::API::OpenGL: return CreateScope<GLRendererAPI>();
+			case RendererAPI::API::OpenGL: return CreateRef<GLRendererAPI>();
 #		endif
 
 		default: LOG_CORE_ASSERT(false, "Unknown RendererAPI!"); return nullptr;

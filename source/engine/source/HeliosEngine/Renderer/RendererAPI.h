@@ -1,15 +1,5 @@
 #pragma once
 
-#ifdef BUILDWITH_RENDERER_DIRECTX
-#endif
-#ifdef BUILDWITH_RENDERER_METAL
-#endif
-#ifdef BUILDWITH_RENDERER_VULKAN
-#	include <vulkan/vulkan.hpp>
-#endif
-#ifdef BUILDWITH_RENDERER_OPENGL
-#endif
-
 
 namespace Helios {
 
@@ -50,7 +40,7 @@ namespace Helios {
 
 		static const char* GetAPIString(API api = GetAPI());
 
-		static Scope<RendererAPI> Create();
+		static Ref<RendererAPI> Create();
 
 	private:
 		static API s_API;

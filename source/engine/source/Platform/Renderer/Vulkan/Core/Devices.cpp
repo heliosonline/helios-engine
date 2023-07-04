@@ -1,28 +1,32 @@
 #include "pch.h"
 
-#include "Platform/Renderer/Vulkan/VKDevice.h"
+#include "Platform/Renderer/Vulkan/Core/Devices.h"
+#include "HeliosEngine/Renderer/Renderer.h"
+
+#include "Platform/Renderer/Vulkan/Core/Instance.h"
 
 #include <GLFW/glfw3.h>
 
 
-namespace Helios {
+namespace Helios::Vulkan {
 
 
-	VKDevice::VKDevice(Ref<VKInstance>& inst)
-		: m_Instance(inst)
+	Devices::Devices()
 	{
-		// Setup list of layers
-		#ifdef BUILD_DEBUG
-			m_ListLayers.push_back("VK_LAYER_KHRONOS_validation");
-		#endif
-
-		// Setup list of extensions
-		m_ListExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+		m_Instance = static_cast<VKRendererAPI*>(Renderer::Get())->GetInstance();
 	}
 
 
-	void VKDevice::Create()
+	void Devices::Create()
 	{
+		// Setup list of layers
+#		ifdef BUILD_DEBUG
+			m_ListLayers.push_back("VK_LAYER_KHRONOS_validation");
+#		endif
+
+		// Setup list of extensions
+		m_ListExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+
 		// Pick best suitable physical device
 		LOG_RENDER_DEBUG("Choosing vulkan physical device...");
 		PickPhysicalDevice();
@@ -34,20 +38,20 @@ namespace Helios {
 	}
 
 
-	void VKDevice::Destroy()
+	void Devices::Destroy()
 	{
 		if (m_vkLogicalDevice)
 			m_vkLogicalDevice.destroy();
 	}
 
 
-	void VKDevice::PickPhysicalDevice()
+	void Devices::PickPhysicalDevice()
 	{
 		// Get all suitable devices
 		GetPhysicalDevices();
 
 		// Pick the most suitable device
-		PhysicalDeviceInfo current;
+		PhysicalDeviceInfo current = {};
 		for (auto entry : m_ListPhysicalDevices)
 		{
 			if (current.score < entry.score)
@@ -57,14 +61,18 @@ namespace Helios {
 			}
 		}
 
-		LOG_RENDER_ASSERT(m_vkPhysicalDevice, "Failed to find a suitable physical device!");
+		if (!m_vkPhysicalDevice)
+		{
+			LOG_RENDER_FATAL("Failed to find a suitable physical device!");
+			return;
+		}
 
-		LOG_RENDER_DEBUG("Selected physical device: ({:04X}:{:04X}) \"{}\"",
+		LOG_RENDER_INFO("Selected physical device: ({:04X}:{:04X}) \"{}\"",
 			current.vendorID, current.deviceID, current.name);
 	}
 
 
-	std::vector<PhysicalDeviceInfo>& VKDevice::GetPhysicalDevices()
+	std::vector<PhysicalDeviceInfo>& Devices::GetPhysicalDevices()
     {
 		static bool s_aqquired = false;
 
@@ -73,46 +81,44 @@ namespace Helios {
 			return m_ListPhysicalDevices;
 
 		// Get all devices
-		std::vector<vk::PhysicalDevice> available = m_Instance->GetInstance().enumeratePhysicalDevices();
-		for (auto d : available)
+		std::vector<vk::PhysicalDevice> available = m_Instance->Get().enumeratePhysicalDevices();
+		for (auto dev : available)
 		{
 			// Get device properties
-			vk::PhysicalDeviceProperties props = d.getProperties();
+			vk::PhysicalDeviceProperties props = dev.getProperties();
 
 			// Log device
-			#if (LOG_LEVEL <= LOG_LEVEL_DEBUG)
-				LOG_RENDER_DEBUG("Physical device:");
-				LOG_RENDER_DEBUG("[ INFO ] Device: ({:04X}:{:04X}) \"{}\"",
-					props.vendorID, props.deviceID,
-					props.deviceName);
-				switch (props.deviceType)
-				{
-				case vk::PhysicalDeviceType::eDiscreteGpu:   LOG_RENDER_DEBUG("[ INFO ] Type: Discrete GPU");   break;
-				case vk::PhysicalDeviceType::eIntegratedGpu: LOG_RENDER_DEBUG("[ INFO ] Type: Integrated GPU"); break;
-				case vk::PhysicalDeviceType::eVirtualGpu:    LOG_RENDER_DEBUG("[ INFO ] Type: Virtual GPU");    break;
-				case vk::PhysicalDeviceType::eCpu:           LOG_RENDER_DEBUG("[ INFO ] Type: CPU");            break;
-				case vk::PhysicalDeviceType::eOther:         LOG_RENDER_DEBUG("[ INFO ] Type: Other");          break;
-				}
-				LOG_RENDER_DEBUG("[ INFO ] API v{}.{}.{}.{}",
-					VK_API_VERSION_VARIANT(props.apiVersion),
-					VK_API_VERSION_MAJOR(props.apiVersion),
-					VK_API_VERSION_MINOR(props.apiVersion),
-					VK_API_VERSION_PATCH(props.apiVersion));
-			#endif
+			LOG_RENDER_INFO("Physical device:");
+			LOG_RENDER_INFO("[ INFO ] Device: ({:04X}:{:04X}) \"{}\"",
+				props.vendorID, props.deviceID,
+				props.deviceName);
+			switch (props.deviceType)
+			{
+			case vk::PhysicalDeviceType::eDiscreteGpu:   LOG_RENDER_DEBUG("[ INFO ] Type: Discrete GPU");   break;
+			case vk::PhysicalDeviceType::eIntegratedGpu: LOG_RENDER_DEBUG("[ INFO ] Type: Integrated GPU"); break;
+			case vk::PhysicalDeviceType::eVirtualGpu:    LOG_RENDER_DEBUG("[ INFO ] Type: Virtual GPU");    break;
+			case vk::PhysicalDeviceType::eCpu:           LOG_RENDER_DEBUG("[ INFO ] Type: CPU");            break;
+			case vk::PhysicalDeviceType::eOther:         LOG_RENDER_DEBUG("[ INFO ] Type: Other");          break;
+			}
+			LOG_RENDER_DEBUG("[ INFO ] API v{}.{}.{}.{}",
+				VK_API_VERSION_VARIANT(props.apiVersion),
+				VK_API_VERSION_MAJOR(props.apiVersion),
+				VK_API_VERSION_MINOR(props.apiVersion),
+				VK_API_VERSION_PATCH(props.apiVersion));
 
 			// Check extensions
 			std::set<std::string> required(m_ListExtensions.begin(), m_ListExtensions.end());
 			if (LOG_LEVEL < LOG_LEVEL_DEBUG)
-				LOG_RENDER_TRACE("Supported device extensions ({}):", d.enumerateDeviceExtensionProperties().size());
+				LOG_RENDER_TRACE("Supported device extensions ({}):", dev.enumerateDeviceExtensionProperties().size());
 			else
-				LOG_RENDER_DEBUG("Required device extensions ({}/{}):", required.size(), d.enumerateDeviceExtensionProperties().size());
-			for (auto& e : d.enumerateDeviceExtensionProperties())
+				LOG_RENDER_DEBUG("Required device extensions ({}/{}):", required.size(), dev.enumerateDeviceExtensionProperties().size());
+			for (auto& ext : dev.enumerateDeviceExtensionProperties())
 			{
-				if (required.contains(e.extensionName))
-					LOG_RENDER_DEBUG("[  OK  ] \"{}\"", e.extensionName);
+				if (required.contains(ext.extensionName))
+					LOG_RENDER_DEBUG("[  OK  ] \"{}\"", ext.extensionName);
 				else
-					LOG_RENDER_TRACE("[UNUSED] \"{}\"", e.extensionName);
-				required.erase(e.extensionName);
+					LOG_RENDER_TRACE("[UNUSED] \"{}\"", ext.extensionName);
+				required.erase(ext.extensionName);
 			}
 			if (!required.empty())
 			{
@@ -123,7 +129,7 @@ namespace Helios {
 			}
 
 			// Find suitable queue families
-			QueueFamilyIndices indices = FindQueueFamilies(d);
+			QueueFamilyIndices indices = GetQueueFamilies(dev);
 			if (!indices.complete())
 			{
 				LOG_RENDER_DEBUG("Unsupported queue families:");
@@ -137,13 +143,13 @@ namespace Helios {
 
 			// Setup device entry
 			PhysicalDeviceInfo newEntry;
-			newEntry.device = d;
+			newEntry.device = dev;
 			newEntry.name = props.deviceName.data();
 			newEntry.deviceID = props.deviceID;
 			newEntry.vendorID = props.vendorID;
 			newEntry.type = props.deviceType;
-			newEntry.score = RateSuitability(d);
-			LOG_RENDER_DEBUG("[ INFO ] Device is suitable (score: {}).", newEntry.score);
+			newEntry.score = RateSuitability(dev);
+			LOG_RENDER_INFO("[ INFO ] Device is suitable (score: {}).", newEntry.score);
 
 			// Add device entry to the list
 			m_ListPhysicalDevices.push_back(newEntry);
@@ -154,7 +160,7 @@ namespace Helios {
 	}
 
 
-	int VKDevice::RateSuitability(const vk::PhysicalDevice& device)
+	int Devices::RateSuitability(const vk::PhysicalDevice& device)
 	{
 		int score = 0;
 
@@ -179,8 +185,11 @@ namespace Helios {
 	}
 
 
-	QueueFamilyIndices VKDevice::FindQueueFamilies(const vk::PhysicalDevice& device)
+	QueueFamilyIndices Devices::GetQueueFamilies(vk::PhysicalDevice device)
 	{
+		if (!device)
+			device = m_vkPhysicalDevice;
+
 		QueueFamilyIndices indices;
 		std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
 
@@ -192,7 +201,7 @@ namespace Helios {
 				indices.graphicsFamily = i;
 
 			// Check presentation support (both: GLFW, native)
-			if (glfwGetPhysicalDevicePresentationSupport(m_Instance->GetInstance(), device, i) == GLFW_TRUE)
+			if (glfwGetPhysicalDevicePresentationSupport(m_Instance->Get(), device, i) == GLFW_TRUE)
 			{
 				if (device.getSurfaceSupportKHR(i, m_Instance->GetSurface()))
 					indices.presentFamily = i;
@@ -210,10 +219,10 @@ namespace Helios {
 	}
 
 
-	void VKDevice::CreateLogicalDevice()
+	void Devices::CreateLogicalDevice()
 	{
 		// Setup QueueInfo
-		QueueFamilyIndices indices = FindQueueFamilies(m_vkPhysicalDevice);
+		QueueFamilyIndices indices = GetQueueFamilies(m_vkPhysicalDevice);
 		std::vector<uint32_t> uniqueIndices;
 		uniqueIndices.push_back(indices.graphicsFamily.value());
 		if (indices.graphicsFamily.value() != indices.presentFamily.value())
@@ -254,17 +263,17 @@ namespace Helios {
 			m_vkLogicalDevice = m_vkPhysicalDevice.createDevice(DeviceInfo);
 		}
 		catch (vk::SystemError err) {
-			LOG_RENDER_ASSERT(0, "Failed to create logical device!");
+			LOG_RENDER_FATAL("Failed to create logical device!");
 		}
 	}
 
 
-	void VKDevice::GetQueues()
+	void Devices::GetQueues()
 	{
-		QueueFamilyIndices indices = FindQueueFamilies(m_vkPhysicalDevice);
+		QueueFamilyIndices indices = GetQueueFamilies(m_vkPhysicalDevice);
 		m_vkGraphicsQueue = m_vkLogicalDevice.getQueue(indices.graphicsFamily.value(), 0);
 		m_vkPresentQueue = m_vkLogicalDevice.getQueue(indices.presentFamily.value(), 0);
 	}
 
 
-} // namespace Helios
+} // namespace Helios::Vulkan

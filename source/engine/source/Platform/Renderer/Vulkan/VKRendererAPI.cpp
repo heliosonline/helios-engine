@@ -2,6 +2,13 @@
 
 #include "Platform/Renderer/Vulkan/VKRendererAPI.h"
 
+#include "Platform/Renderer/Vulkan/Core/Instance.h"
+#include "Platform/Renderer/Vulkan/Core/Devices.h"
+#include "Platform/Renderer/Vulkan/Core/Swapchain.h"
+#include "Platform/Renderer/Vulkan/Core/Pipeline.h"
+
+#include "HeliosEngine/Core/Assets.h"
+
 
 namespace Helios {
 
@@ -10,16 +17,18 @@ namespace Helios {
 	{
 		LOG_RENDER_DEBUG("Initializing vulkan renderer...");
 
-		m_Instance = CreateRef<VKInstance>();
+		Assets::Open("RendererVulkan");
+
+		m_Instance = CreateRef<Vulkan::Instance>();
 		m_Instance->Create();
 
-		m_Device = CreateRef<VKDevice>(m_Instance);
-		m_Device->Create();
+		m_Devices = CreateRef<Vulkan::Devices>();
+		m_Devices->Create();
 
-		m_SwapChain = CreateRef<VKSwapChain>(m_Instance, m_Device);
-		m_SwapChain->Create();
+		m_Swapchain = CreateRef<Vulkan::Swapchain>();
+		m_Swapchain->Create();
 
-		m_Pipeline = CreateRef<VKPipeline>();
+		m_Pipeline = CreateRef<Vulkan::Pipeline>();
 		m_Pipeline->Create();
 	}
 
@@ -28,14 +37,12 @@ namespace Helios {
 	{
 		LOG_RENDER_DEBUG("Shutting down vulkan renderer...");
 
-		if (m_Pipeline)
-			m_Pipeline->Destroy();
-		if (m_SwapChain)
-			m_SwapChain->Destroy();
-		if (m_Device)
-			m_Device->Destroy();
-		if (m_Instance)
-			m_Instance->Destroy();
+		m_Pipeline->Destroy();
+		m_Swapchain->Destroy();
+		m_Devices->Destroy();
+		m_Instance->Destroy();
+
+		Assets::Close("RendererVulkan");
 	}
 
 

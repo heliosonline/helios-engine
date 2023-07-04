@@ -1,28 +1,33 @@
 #include "pch.h"
 
-#include "Platform/Renderer/Vulkan/VKSwapChain.h"
+#include "Platform/Renderer/Vulkan/Core/Swapchain.h"
+#include "HeliosEngine/Renderer/Renderer.h"
+
+#include "Platform/Renderer/Vulkan/Core/Instance.h"
+#include "Platform/Renderer/Vulkan/Core/Devices.h"
 
 #include <GLFW/glfw3.h>
 
 #include "HeliosEngine/Core/Application.h"
 
 
-namespace Helios {
+namespace Helios::Vulkan {
 
 
-	VKSwapChain::VKSwapChain(Ref<VKInstance>& inst, Ref<VKDevice>& dev)
-		: m_Instance(inst), m_Device(dev)
+	Swapchain::Swapchain()
 	{
+		m_Instance = ((VKRendererAPI*)Renderer::Get())->GetInstance();
+		m_Devices = ((VKRendererAPI*)Renderer::Get())->GetDevices();
 	}
 
 
-	void VKSwapChain::Create()
+	void Swapchain::Create()
 	{
 		LOG_RENDER_DEBUG("Creating vulkan swapchain...");
 
 		// Get some capabilities
-		vk::SurfaceCapabilitiesKHR capabilities = m_Device->GetPhysicalDevice().getSurfaceCapabilitiesKHR(m_Instance->GetSurface());
-		QueueFamilyIndices indices = m_Device->FindQueueFamilies(m_Device->GetPhysicalDevice());
+		vk::SurfaceCapabilitiesKHR capabilities = m_Devices->GetPhysicalDevice().getSurfaceCapabilitiesKHR(m_Instance->GetSurface());
+		QueueFamilyIndices indices = m_Devices->GetQueueFamilies();
 		uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
 		// Setup CreateInfo
@@ -52,18 +57,19 @@ namespace Helios {
 
 		// Create the swapchain
 		try {
-			m_vkSwapChain = m_Device->GetLogicalDevice().createSwapchainKHR(createInfo);
+			m_vkSwapchain = m_Devices->GetLogicalDevice().createSwapchainKHR(createInfo);
 		}
 		catch (vk::SystemError err) {
-			LOG_RENDER_ASSERT(0, "Failed to create swapchain!");
+			LOG_RENDER_FATAL("Failed to create swapchain!");
+			return;
 		}
 
 		// Save some data
-		m_vkFormat = createInfo.imageFormat;
-		m_vkExtent = createInfo.imageExtent;
+		m_vkSwapchainFormat = createInfo.imageFormat;
+		m_vkSwapchainExtent = createInfo.imageExtent;
 
 		// Create views
-		std::vector<vk::Image> images = m_Device->GetLogicalDevice().getSwapchainImagesKHR(m_vkSwapChain);
+		std::vector<vk::Image> images = m_Devices->GetLogicalDevice().getSwapchainImagesKHR(m_vkSwapchain);
 		m_Frames.resize(images.size());
 		for (auto i = 0; i < images.size(); ++i)
 		{
@@ -85,30 +91,84 @@ namespace Helios {
 				range.baseArrayLayer = 0;
 				range.layerCount = 1;
 				viewInfo.subresourceRange = range;
-				viewInfo.format = m_vkFormat;
+				viewInfo.format = m_vkSwapchainFormat;
 			}
 			// Create
 			m_Frames[i].image = images[i];
-			m_Frames[i].view = m_Device->GetLogicalDevice().createImageView(viewInfo);
+			m_Frames[i].view = m_Devices->GetLogicalDevice().createImageView(viewInfo);
 		}
 	}
 
 
-	void VKSwapChain::Destroy()
+	void Swapchain::Destroy()
 	{
 		for (auto frame : m_Frames)
-			m_Device->GetLogicalDevice().destroyImageView(frame.view);
-		if (m_vkSwapChain)
-			m_Device->GetLogicalDevice().destroySwapchainKHR(m_vkSwapChain);
+			m_Devices->GetLogicalDevice().destroyImageView(frame.view);
+
+		if (m_vkSwapchain)
+			m_Devices->GetLogicalDevice().destroySwapchainKHR(m_vkSwapchain);
+	}
+
+
+	vk::SurfaceFormatKHR Swapchain::ChooseSurfaceFormat()
+	{
+		std::vector<vk::SurfaceFormatKHR> formats = m_Devices->GetPhysicalDevice().getSurfaceFormatsKHR(m_Instance->GetSurface());
+
+		// Try eB8G8R8A8Unorm which is the common standard
+		// Try eSrgbNonlinear for best quality
+		formats = m_Devices->GetPhysicalDevice().getSurfaceFormatsKHR(m_Instance->GetSurface());
+		for (auto format : formats)
+		{
+			if ((format.format == vk::Format::eB8G8R8A8Unorm) and (format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear))
+				return format;
+		}
+
+		return formats[0];
+	}
+
+
+	vk::PresentModeKHR Swapchain::ChoosePresentMode()
+	{
+		std::vector<vk::PresentModeKHR> modes = m_Devices->GetPhysicalDevice().getSurfacePresentModesKHR(m_Instance->GetSurface());
+
+		// Try eMailbox for fastest framerate
+		for (auto mode : modes)
+		{
+			if (mode == vk::PresentModeKHR::eMailbox)
+				return mode;
+		}
+
+		return vk::PresentModeKHR::eFifo;
+	}
+
+
+	vk::Extent2D Swapchain::ChooseExtent()
+	{
+		vk::SurfaceCapabilitiesKHR capabilities = m_Devices->GetPhysicalDevice().getSurfaceCapabilitiesKHR(m_Instance->GetSurface());
+
+		// If set just return the (fixed) current extent
+		if (capabilities.currentExtent.width != UINT32_MAX)
+			return capabilities.currentExtent;
+
+		// Get the window/framebuffer pixel size
+		int width, height;
+		glfwGetFramebufferSize((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow(), &width, &height);
+
+		// Calculate dimensions
+		vk::Extent2D extent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
+		extent.width = std::clamp(extent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
+		extent.height = std::clamp(extent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
+
+		return extent;
 	}
 
 
 #if 0
-	void VKSwapChain::QuerySupport()
+	void Swapchain::QuerySwapchainSupport()
 	{
-		vk::SurfaceCapabilitiesKHR capabilities = m_Device->GetPhysicalDevice().getSurfaceCapabilitiesKHR(m_Instance->GetSurface());
-		std::vector<vk::SurfaceFormatKHR> formats = m_Device->GetPhysicalDevice().getSurfaceFormatsKHR(m_Instance->GetSurface());
-		std::vector<vk::PresentModeKHR> presentModes = m_Device->GetPhysicalDevice().getSurfacePresentModesKHR(m_Instance->GetSurface());
+		vk::SurfaceCapabilitiesKHR capabilities = m_Devices->GetPhysicalDevice().getSurfaceCapabilitiesKHR(m_Instance->GetSurface());
+		std::vector<vk::SurfaceFormatKHR> formats = m_Devices->GetPhysicalDevice().getSurfaceFormatsKHR(m_Instance->GetSurface());
+		std::vector<vk::PresentModeKHR> presentModes = m_Devices->GetPhysicalDevice().getSurfacePresentModesKHR(m_Instance->GetSurface());
 
 		if (LOG_LEVEL <= LOG_LEVEL_TRACE)
 		{
@@ -240,57 +300,4 @@ namespace Helios {
 #endif
 
 
-	vk::SurfaceFormatKHR VKSwapChain::ChooseSurfaceFormat()
-	{
-		std::vector<vk::SurfaceFormatKHR> formats = m_Device->GetPhysicalDevice().getSurfaceFormatsKHR(m_Instance->GetSurface());
-
-		// Try eB8G8R8A8Unorm which is the common standard
-		// Try eSrgbNonlinear for best quality
-		formats = m_Device->GetPhysicalDevice().getSurfaceFormatsKHR(m_Instance->GetSurface());
-		for (auto format : formats)
-		{
-			if ((format.format == vk::Format::eB8G8R8A8Unorm) and (format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear))
-				return format;
-		}
-
-		return formats[0];
-	}
-
-
-	vk::PresentModeKHR VKSwapChain::ChoosePresentMode()
-	{
-		std::vector<vk::PresentModeKHR> modes = m_Device->GetPhysicalDevice().getSurfacePresentModesKHR(m_Instance->GetSurface());
-
-		// Try eMailbox for fastest framerate
-		for (auto mode : modes)
-		{
-			if (mode == vk::PresentModeKHR::eMailbox)
-				return mode;
-		}
-
-		return vk::PresentModeKHR::eFifo;
-	}
-
-
-	vk::Extent2D VKSwapChain::ChooseExtent()
-	{
-		vk::SurfaceCapabilitiesKHR capabilities = m_Device->GetPhysicalDevice().getSurfaceCapabilitiesKHR(m_Instance->GetSurface());
-
-		// If set just return the (fixed) current extent
-		if (capabilities.currentExtent.width != UINT32_MAX)
-			return capabilities.currentExtent;
-
-		// Get the window/framebuffer pixel size
-		int width, height;
-		glfwGetFramebufferSize((GLFWwindow*)Application::Get().GetWindow().GetNativeWindow(), &width, &height);
-
-		// Calculate dimensions
-		vk::Extent2D extent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
-		extent.width = std::clamp(extent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
-		extent.height = std::clamp(extent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
-
-		return extent;
-	}
-
-
-} // namespace Helios
+} // namespace Helios::Vulkan

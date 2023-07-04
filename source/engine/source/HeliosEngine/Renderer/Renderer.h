@@ -19,7 +19,7 @@ namespace Helios {
 		static RendererAPI* Get() { return s_RendererAPI.get(); }
 
 	private:
-		static Scope<RendererAPI> s_RendererAPI;
+		static Ref<RendererAPI> s_RendererAPI;
 	};
 
 

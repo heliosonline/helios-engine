@@ -33,25 +33,47 @@ namespace Helios::Assets {
 	void Init(const std::string& basepath)
 	{
 		s_BasePath = std::filesystem::path(
-			(basepath.empty() ? "" : basepath + "/")
+			(basepath.empty() ? "" : basepath + "/") + "Assets/"
 		).make_preferred().string();
+	}
+
+
+	bool Open(const std::string& arcname, bool create)
+	{
+		LOG_CORE_DEBUG("Opening archive: \"{}\".", arcname);
+		return true;
+	}
+
+
+	bool Close(const std::string& arcname)
+	{
+		LOG_CORE_DEBUG("Closing archive: \"{}\".", arcname);
+		return true;
 	}
 
 
 	std::vector<char> Load(const std::string& filename, const std::string& arcname)
 	{
-		return LoadRealFile(filename);
+		LOG_CORE_DEBUG("Loading file \"{}\" from archive \"{}\".", filename, arcname);
+
+		if (arcname.empty())
+			return LoadRealFile(filename);
+		else
+			return LoadRealFile(arcname + "/" + filename);
 	}
 
 
     std::vector<char> LoadRealFile(const std::string& filename)
     {
 		// Open file
-		std::string filepath(s_BasePath + filename);
-		std::ifstream file(filepath, std::ios::ate | std::ios::binary);
+		std::string filepath = std::filesystem::path(s_BasePath + filename)
+			.make_preferred().string();
+		LOG_CORE_DEBUG("Loading real file \"{}\".", filepath);
+		std::ifstream file;
+		file.open(filepath, std::ios::ate | std::ios::binary);
 		if (!file.is_open())
 		{
-			LOG_CORE_ASSERT("Failed to open file \"{}\"", filename);
+			LOG_CORE_ASSERT(0, "Failed to open real file: \"" + filename + "\"");
 		}
 
 		// Create buffer with target size

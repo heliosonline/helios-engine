@@ -1,30 +1,31 @@
 #include "pch.h"
 
-#include "Platform/Renderer/Vulkan/VKInstance.h"
+#include "Platform/Renderer/Vulkan/Core/Instance.h"
 
 #include <GLFW/glfw3.h>
 
 #include "HeliosEngine/Core/Application.h"
-//#include "HeliosEngine/Core/Config.h"
 
 
-namespace Helios {
+namespace Helios::Vulkan {
 
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL VKDebugCallback(
-		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT
-		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT
-		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
-		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT
 		VkDebugUtilsMessageSeverityFlagBitsEXT severity,
-		// VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT
-		// VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT
-		// VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT
-		// VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT
 		VkDebugUtilsMessageTypeFlagBitsEXT type,
 		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
 		void* pUserData)
 	{
+		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT
+
+		// VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT
+		// VK_DEBUG_UTILS_MESSAGE_TYPE_DEVICE_ADDRESS_BINDING_BIT_EXT
+
 		if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT)
 			LOG_RENDER_TRACE(pCallbackData->pMessage);
 		else if (severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
@@ -38,7 +39,7 @@ namespace Helios {
 	}
 
 
-	void VKInstance::Create()
+	void Instance::Create()
 	{
 		LOG_RENDER_DEBUG("Creating vulkan instance...");
 
@@ -67,12 +68,16 @@ namespace Helios {
 		}
 
 		// Setup list of layers
-		#ifdef BUILD_DEBUG
+#		ifdef BUILD_DEBUG
 			m_ListLayers.push_back("VK_LAYER_KHRONOS_validation");
-		#endif
+#		endif
 
-		// Check layer support
-		LOG_RENDER_ASSERT(CheckSupportedLayers(), "Required instance layers not supported!");
+				// Check layer support
+		if (!CheckSupportedLayers())
+		{
+			LOG_RENDER_FATAL("Required instance layers not supported!");
+			return;
+		}
 
 		// Get required extensions for GLFW
 		uint32_t glfwExtCount = 0;
@@ -81,12 +86,16 @@ namespace Helios {
 		m_ListExtensions = std::vector<const char*>(glfwExt, glfwExt + glfwExtCount);
 
 		// Setup list of extensions
-		#ifdef BUILD_DEBUG
+#		ifdef BUILD_DEBUG
 			m_ListExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-		#endif
+#		endif
 
-		// Check extension support
-		LOG_RENDER_ASSERT(CheckSupportedExtensions(), "Required instance extensions not supported!");
+				// Check extension support
+		if (!CheckSupportedExtensions())
+		{
+			LOG_RENDER_FATAL("Required instance extensions not supported!");
+			return;
+		}
 
 		// Setup InstanceInfo
 		vk::InstanceCreateInfo createInfo = vk::InstanceCreateInfo();
@@ -103,23 +112,24 @@ namespace Helios {
 			m_vkInstance = vk::createInstance(createInfo);
 		}
 		catch (vk::SystemError err) {
-			LOG_RENDER_ASSERT(0, "Failed to create instance!");
+			LOG_RENDER_FATAL("Failed to create instance!");
+			return;
 		}
 
 		// Get the function loader
 		m_vkLoader = vk::DispatchLoaderDynamic(m_vkInstance, vkGetInstanceProcAddr);
 
 		// Create debug callback
-		#ifdef BUILD_DEBUG
+#		ifdef BUILD_DEBUG
 			CreateDebugMessanger();
-		#endif
+#		endif
 
-		// Create the surface
+				// Create the surface
 		CreateSurface();
 	}
 
 
-	void VKInstance::Destroy()
+	void Instance::Destroy()
 	{
 		if (m_vkSurface)
 			m_vkInstance.destroySurfaceKHR(m_vkSurface);
@@ -132,7 +142,7 @@ namespace Helios {
 	}
 
 
-	bool VKInstance::CheckSupportedLayers()
+	bool Instance::CheckSupportedLayers()
 	{
 		std::vector<vk::LayerProperties> supported = vk::enumerateInstanceLayerProperties();
 		std::set<std::string> required(m_ListLayers.begin(), m_ListLayers.end());
@@ -158,7 +168,7 @@ namespace Helios {
 	}
 
 
-	bool VKInstance::CheckSupportedExtensions()
+	bool Instance::CheckSupportedExtensions()
 	{
 		std::vector<vk::ExtensionProperties> supported = vk::enumerateInstanceExtensionProperties();
 		std::set<std::string> required(m_ListExtensions.begin(), m_ListExtensions.end());
@@ -184,7 +194,7 @@ namespace Helios {
 	}
 
 
-	void VKInstance::CreateDebugMessanger()
+	void Instance::CreateDebugMessanger()
 	{
 		vk::DebugUtilsMessengerCreateInfoEXT createInfo = vk::DebugUtilsMessengerCreateInfoEXT();
 		{
@@ -206,14 +216,17 @@ namespace Helios {
 	}
 
 
-	void VKInstance::CreateSurface()
+	void Instance::CreateSurface()
 	{
 		VkSurfaceKHR c_style_suface;
 		if (glfwCreateWindowSurface(m_vkInstance, (GLFWwindow*)Application::Get().GetWindow().GetNativeWindow(), nullptr, &c_style_suface) != VK_SUCCESS)
-			LOG_RENDER_ASSERT(0, "Failed to create surface!");
+		{
+			LOG_RENDER_FATAL("Failed to create surface!");
+			return;
+		}
 
 		m_vkSurface = c_style_suface;
 	}
 
 
-} // namespace Helios
+} // namespace Helios::Vulkan

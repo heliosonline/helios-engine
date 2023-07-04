@@ -1,19 +1,22 @@
 #pragma once
 
-#include <vulkan/vulkan.hpp>
+#include "Platform/Renderer/Vulkan/VKRendererAPI.h"
 
 
-namespace Helios {
+namespace Helios::Vulkan {
 
 
-	class VKInstance
+	class Instance
 	{
 	public:
+		Instance() = default;
+		~Instance() = default;
 
 		void Create();
 		void Destroy();
 
-		vk::Instance& GetInstance() { return m_vkInstance; }
+	public:
+		vk::Instance& Get() { return m_vkInstance; }
 		vk::SurfaceKHR& GetSurface() { return m_vkSurface; }
 
 	private:
@@ -23,7 +26,7 @@ namespace Helios {
 		void CreateSurface();
 
 	private:
-		// Native vulkan objects
+		// Vulkan objects
 		vk::Instance m_vkInstance;
 		vk::DispatchLoaderDynamic m_vkLoader;
 		vk::DebugUtilsMessengerEXT m_vkDebugMessenger;
@@ -35,4 +38,4 @@ namespace Helios {
 	};
 
 
-} // namespace Helios
+} // namespace Helios::Vulkan

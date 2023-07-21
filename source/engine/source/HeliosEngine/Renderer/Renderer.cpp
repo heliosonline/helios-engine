@@ -128,7 +128,15 @@ namespace Helios {
 	{
 		HE_PROFILER_FUNCTION();
 
-//		RenderCommand::SetViewport(0, 0, width, height);
+		s_RendererAPI->OnWindowResize(width, height);
+	}
+
+
+	void Renderer::OnFramebufferResize(uint32_t width, uint32_t height)
+	{
+		HE_PROFILER_FUNCTION();
+
+		s_RendererAPI->OnFramebufferResize(width, height);
 	}
 
 

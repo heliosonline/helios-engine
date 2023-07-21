@@ -35,7 +35,8 @@ project "helios.engine"
 		-- dedicated platform detection
 		"source/Platform/PlatformDetection.h",
 		-- assets
-		"assets/**.*"
+		"assets/**.vert",
+		"assets/**.frag",
 	}
 
 
@@ -60,7 +61,6 @@ project "helios.engine"
 
 		defines {
 --			"BUILDWITH_RENDERER_DIRECTX",
-			--"BUILDWITH_RENDERER_METAL",
 			"BUILDWITH_RENDERER_VULKAN",
 --			"BUILDWITH_RENDERER_OPENGL",
 		}
@@ -68,8 +68,6 @@ project "helios.engine"
 		files {
 			"source/Platform/Renderer/DirectX/**.h",
 			"source/Platform/Renderer/DirectX/**.cpp",
-			--"source/Platform/Renderer/Metal/**.h",
-			--"source/Platform/Renderer/Metal/**.cpp",
 			"source/Platform/Renderer/Vulkan/**.h",
 			"source/Platform/Renderer/Vulkan/**.cpp",
 			"source/Platform/Renderer/OpenGL/**.h",
@@ -77,7 +75,6 @@ project "helios.engine"
 		}
 
 		VendorDirectX{}
-		--VendorMetal{}
 		VendorVulkan{}
 		VendorOpenGL{}
 
@@ -91,25 +88,17 @@ project "helios.engine"
 		}
 		
 		defines {
-			--"BUILDWITH_RENDERER_DIRECTX",
-			--"BUILDWITH_RENDERER_METAL",
 			"BUILDWITH_RENDERER_VULKAN",
 			"BUILDWITH_RENDERER_OPENGL",
 		}
 
 		files {
-			--"source/Platform/Renderer/DirectX/**.h",
-			--"source/Platform/Renderer/DirectX/**.cpp",
-			--"source/Platform/Renderer/Metal/**.h",
-			--"source/Platform/Renderer/Metal/**.cpp",
 			"source/Platform/Renderer/Vulkan/**.h",
 			"source/Platform/Renderer/Vulkan/**.cpp",
 			"source/Platform/Renderer/OpenGL/**.h",
 			"source/Platform/Renderer/OpenGL/**.cpp",
 		}
 
-		--VendorDirectX{}
-		--VendorMetal{}
 		VendorVulkan{}
 		VendorOpenGL{}
 
@@ -122,15 +111,12 @@ project "helios.engine"
 		}
 		
 		defines {
-			--"BUILDWITH_RENDERER_DIRECTX",
 			"BUILDWITH_RENDERER_METAL",
 			"BUILDWITH_RENDERER_VULKAN",
 			"BUILDWITH_RENDERER_OPENGL",
 		}
 
 		files {
-			--"source/Platform/Renderer/DirectX/**.h",
-			--"source/Platform/Renderer/DirectX/**.cpp",
 			"source/Platform/Renderer/Metal/**.h",
 			"source/Platform/Renderer/Metal/**.cpp",
 			"source/Platform/Renderer/Vulkan/**.h",
@@ -139,14 +125,12 @@ project "helios.engine"
 			"source/Platform/Renderer/OpenGL/**.cpp",
 		}
 
-		--VendorDirectX{}
 		VendorMetal{}
 		VendorVulkan{}
 		VendorOpenGL{}
 
 
 	filter {}
-
 
 
 --	prebuildmessage "Updating version information..."
@@ -157,6 +141,5 @@ project "helios.engine"
 --
 	postbuildmessage "Copying assets to the target folder..."
 	postbuildcommands {
---		"{COPYDIR} %{wks.location}Source/Client/GameEngine/Assets " .. dir_bin .. dir_group .. dir_config .. "Assets",
 		"{COPYDIR} \"%{prj.location}assets\" \"" .. dir_bin .. dir_group .. dir_config .. "Assets\""
 	}

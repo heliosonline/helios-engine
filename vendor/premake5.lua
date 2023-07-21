@@ -1,1 +1,2 @@
-include("premake5_glfw")
+--include("headers")
+include("libs")

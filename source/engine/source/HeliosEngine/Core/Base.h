@@ -27,6 +27,7 @@
 #include <functional>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 
 #include <fstream>
 #include <iostream>
@@ -43,6 +44,12 @@
 #include <unordered_set>
 
 
+// Engine Misc
+#include "HeliosEngine/Core/Util.h"
+#include "HeliosEngine/Core/Log.h"
+#include "HeliosEngine/Debug/Instrumentor.h"
+
+
 // Libraries (GLM)
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -50,11 +57,6 @@
 //#include <glm/gtc/matrix_transform.hpp>
 //#include <glm/gtc/type_ptr.hpp>
 
+
 // Libraries (other)
 //#include <Common/Misc.h>
-
-
-// Engine Misc
-#include "HeliosEngine/Core/Util.h"
-#include "HeliosEngine/Core/Log.h"
-#include "HeliosEngine/Debug/Instrumentor.h"

@@ -35,6 +35,10 @@ namespace Helios {
 		virtual void Init() = 0;
 		virtual void Shutdown() = 0;
 
+		virtual void Render() = 0;
+		virtual void OnWindowResize(uint32_t width, uint32_t height) = 0;
+		virtual void OnFramebufferResize(uint32_t width, uint32_t height) = 0;
+
 		static API GetAPI() { return s_API; }
 		static void SetAPI(API api) { s_API = api; }
 

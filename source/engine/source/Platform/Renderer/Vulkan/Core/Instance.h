@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Platform/Renderer/Vulkan/VKRendererAPI.h"
+#include <vulkan/vulkan.hpp>
 
 
 namespace Helios::Vulkan {
@@ -9,32 +9,32 @@ namespace Helios::Vulkan {
 	class Instance
 	{
 	public:
-		Instance() = default;
-		~Instance() = default;
+		Instance();
+		~Instance();
 
 		void Create();
 		void Destroy();
 
+	// Getter for vulkan objects
 	public:
-		vk::Instance& Get() { return m_vkInstance; }
+		vk::Instance& GetInstance() { return m_vkInstance; }
 		vk::SurfaceKHR& GetSurface() { return m_vkSurface; }
 
+	// Vulkan objects
 	private:
-		bool CheckSupportedLayers();
-		bool CheckSupportedExtensions();
-		void CreateDebugMessanger();
-		void CreateSurface();
-
-	private:
-		// Vulkan objects
 		vk::Instance m_vkInstance;
+		vk::SurfaceKHR m_vkSurface;
 		vk::DispatchLoaderDynamic m_vkLoader;
 		vk::DebugUtilsMessengerEXT m_vkDebugMessenger;
-		vk::SurfaceKHR m_vkSurface;
 
-		// Internal data
-		std::vector<const char*> m_ListLayers;
-		std::vector<const char*> m_ListExtensions;
+	// Internal helper
+	private:
+		std::vector<const char*> GetRequiredLayers();
+		std::vector<const char*> GetRequiredExtensions();
+		bool CheckSupportedLayers();
+		bool CheckSupportedExtensions();
+		void CreateDebugMessenger();
+		void CreateSurface();
 	};
 
 

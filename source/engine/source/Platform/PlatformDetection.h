@@ -19,7 +19,7 @@
 #		define TARGET_PLATFORM_WINDOWS
 #	else
 		// Windows x86
-#		error "x86 Builds are not supported!"
+#		error "x86 Builds (32bits) are not supported!"
 #	endif
 
 // ----------------------------------------------------------------------------

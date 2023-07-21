@@ -14,18 +14,18 @@
 namespace Helios {
 
 
+	static void GLFWErrorCallback(int error, const char* description)
+	{
+		LOG_GLFW_ERROR("({0}): {1}", error, description);
+	}
+
+
 	Scope<Window> Window::Create(const WindowSpecification& spec)
 	{
 		LOG_CORE_DEBUG("Creating main window...");
 		return CreateScope<Window>(spec);
 	}
 	static uint8_t s_GLFWWindowCount = 0;
-
-
-	static void GLFWErrorCallback(int error, const char* description)
-	{
-		LOG_GLFW_ERROR("({0}): {1}", error, description);
-	}
 
 
 	Window::Window(const WindowSpecification& spec)
@@ -56,17 +56,18 @@ namespace Helios {
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
 
-		#if defined(BUILD_DEBUG) && defined(BUILDWITH_RENDERER_OPENGL)
+		// OpenGL: Tell GLFW to create a debug mode context
+#		if defined(BUILD_DEBUG) && defined(BUILDWITH_RENDERER_OPENGL)
 			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_CONTEXT_DEBUG, GLFW_TRUE);
 			LOG_GLFW_DEBUG("GLFW using debug mode context for OpenGL (hint)");
-		#endif
+#		endif
 
-		// Prevent GLFW from creating an OpenGL context
-		#if defined(BUILDWITH_RENDERER_VULKAN)
+		// Vulkan: Tell GLFW to not create an OpenGL context
+#		if defined(BUILDWITH_RENDERER_VULKAN)
 			if (Renderer::GetAPI() == RendererAPI::API::Vulkan)
 				glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		#endif
+#		endif
 
 //		{ // debug
 //			int count_mon;
@@ -88,7 +89,8 @@ namespace Helios {
 //			}
 //		} // debug
 
-		// setup the window
+		// Setup the window
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 		m_Window = glfwCreateWindow((int)spec.Width, (int)spec.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		// glfwSetWindowIcon(GLFWwindow* window, int count, const GLFWimage* images);
 		// glfwSetWindowPos(GLFWwindow* window, int xpos, int ypos);
@@ -296,7 +298,15 @@ namespace Helios {
 
 		//-----------------------------------
 		// Set GLFW callbacks (Framebuffer events)
-		//glfwSetFramebufferSizeCallback
+		glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				data.Width = width;
+				data.Height = height;
+
+				FramebufferResizeEvent event(width, height);
+				data.EventCallback(event);
+			});
 	}
 
 

@@ -40,7 +40,7 @@ namespace Helios {
 	{
 		switch (s_API)
 		{
-		case RendererAPI::API::None: LOG_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::None: LOG_CORE_EXCEPT("RendererAPI::None is not supported!"); return nullptr;
 
 		// related on build options and platform
 #		ifdef BUILDWITH_RENDERER_DIRECTX
@@ -56,7 +56,7 @@ namespace Helios {
 			case RendererAPI::API::OpenGL: return CreateRef<GLRendererAPI>();
 #		endif
 
-		default: LOG_CORE_ASSERT(false, "Unknown RendererAPI!"); return nullptr;
+		default: LOG_CORE_EXCEPT("Unknown or not implemented RendererAPI!"); return nullptr;
 		}
 	}
 

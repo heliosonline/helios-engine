@@ -6,6 +6,30 @@
 namespace Helios {
 
 
+	class FramebufferResizeEvent : public Event
+	{
+	public:
+		FramebufferResizeEvent(unsigned int width, unsigned int height)
+			: m_Width(width), m_Height(height) {}
+
+		unsigned int GetWidth() const { return m_Width; }
+		unsigned int GetHeight() const { return m_Height; }
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "FramebufferResizeEvent: " << m_Width << ", " << m_Height;
+			return ss.str();
+		}
+
+		HE_EVENT_CLASS_TYPE(FramebufferResize)
+		HE_EVENT_CLASS_CATEGORY(EventCategoryApplication)
+
+	private:
+		unsigned int m_Width, m_Height;
+	};
+
+
 	class WindowResizeEvent : public Event
 	{
 	public:

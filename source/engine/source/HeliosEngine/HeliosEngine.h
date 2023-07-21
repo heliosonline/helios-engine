@@ -2,11 +2,13 @@
 
 // Core
 #include <HeliosEngine/Core/Base.h>
-#include <HeliosEngine/Core/Util.h>
 #include <HeliosEngine/Core/Application.h>
+#include <HeliosEngine/Core/Assets.h>
+#include <HeliosEngine/Core/Config.h>
 #include <HeliosEngine/Core/Layer.h>
 //#include <HeliosEngine/UI/UILayer.h>
-//#include <HeliosEngine/Core/Input.h>
+#include <HeliosEngine/Core/Input.h>
+#include <HeliosEngine/Core/Timer.h>
 #include <HeliosEngine/Core/Timestep.h>
 //#include <HeliosEngine/Core/UUID.h>
 
@@ -32,6 +34,7 @@
 //#include <HeliosEngine/Renderer/Camera/OrthographicCamera.h>
 //#include <HeliosEngine/Renderer/Camera/OrthographicCameraController.h>
 //#include <HeliosEngine/Renderer/Camera/UICameraController.h>
+#include <HeliosEngine/Renderer/Model.h>
 
 // EntryPoint for the Application
 #include <HeliosEngine/Core/EntryPoint.h>

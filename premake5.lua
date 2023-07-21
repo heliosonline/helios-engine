@@ -14,7 +14,8 @@ workspace "Helios Engine"
 		"MacOS"
 	}
 	
-	startproject "helios.sandbox"
+	startproject "helios.engine.sandbox"
+
 
 	--------------------------------
 	-- [ PLATFORM CONFIGURATION ] --
@@ -28,10 +29,11 @@ workspace "Helios Engine"
 	filter "platforms:MacOS"
 		system  "macosx"
 
-	-- Windows only
+	-- Windows/MSVC only
 	filter { "system:windows", "action:vs*" }
 		flags { "MultiProcessorCompile", "NoMinimalRebuild" }
 		systemversion "latest"
+
 
 	-------------------------------------
 	-- [ DEBUG/RELEASE CONFIGURATION ] --
@@ -51,16 +53,21 @@ workspace "Helios Engine"
 			"NDEBUG",
 		}
 		symbols  "Off"
-		optimize "Speed"
+		optimize "Off"
+--		optimize "On"
+--		optimize "Speed"
+--		optimize "Full"
 		runtime  "Release"
 
 	filter {}
+
 
 	-------------------------------
 	-- [ LIBRARIES (UTIL-FUNC) ] --
 	-------------------------------
 	
 	include("premake5_libs.lua")
+
 
 	-------------------------------
 	-- [ PROJECT CONFIGURATION ] --
@@ -71,9 +78,10 @@ workspace "Helios Engine"
 	dir_config  = "%{string.lower(cfg.platform)}-%{string.lower(cfg.buildcfg)}/"
 	dir_project = "%{string.lower(prj.name)}"
 
-	dir_group = ""
-	include("source/engine/")
-	include("source/sandbox/")
+	group "helios"
+		dir_group = "helios/"
+		include("source/engine/")
+		include("source/engine-sandbox/")
 
 --	group "Client"
 --		dir_group = "Client/"

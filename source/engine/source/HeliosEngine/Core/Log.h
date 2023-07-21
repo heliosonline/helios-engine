@@ -46,7 +46,7 @@ namespace Helios {
 #	ifdef BUILD_DEBUG
 #		define LOG_LEVEL LOG_LEVEL_TRACE
 #	else
-#		define LOG_LEVEL LOG_LEVEL_INFO
+#		define LOG_LEVEL LOG_LEVEL_TRACE
 #	endif
 #endif
 
@@ -91,3 +91,9 @@ namespace Helios {
 #	define LOG_RENDER_ASSERT(x, ...)
 #	define LOG_ASSERT(x, ...)
 #endif
+
+// EXCEPTION macros (exceptions are always logged as fatal errors)
+#define LOG_CORE_EXCEPT(x)   { LOG_CORE_FATAL("Core-Exception: {}", x); throw std::runtime_error(x); }
+#define LOG_GLFW_EXCEPT(x)   { LOG_GLFW_FATAL("GLFW-Exception: {}", x); throw std::runtime_error(x); }
+#define LOG_RENDER_EXCEPT(x) { LOG_RENDER_FATAL("Renderer-Exception: {}", x); throw std::runtime_error(x); }
+#define LOG_EXCEPT(x)        { LOG_FATAL("App-Exception: {}", x); throw std::runtime_error(x); }

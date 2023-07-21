@@ -85,16 +85,16 @@ namespace Helios {
 
 		// Log versions
 		LOG_CORE_DEBUG("Working path: {0}", m_Specification.WorkingDirectory);
-		LOG_CORE_INFO("Engine-Version: {}.{}.{}.{}",
-			HE_VERSION_RESERVED(HE_VERSION),
+		LOG_CORE_INFO("Engine-Version: {}.{}.{} ({})",
 			HE_VERSION_MAJOR(HE_VERSION),
 			HE_VERSION_MINOR(HE_VERSION),
-			HE_VERSION_PATCH(HE_VERSION));
-		LOG_CORE_INFO("Application-Version: {}.{}.{}.{}",
-			HE_VERSION_RESERVED(m_Specification.Version),
+			HE_VERSION_PATCH(HE_VERSION),
+			HE_VERSION_TYPE_STRING(HE_VERSION));
+		LOG_CORE_INFO("Application-Version: {}.{}.{} ({})",
 			HE_VERSION_MAJOR(m_Specification.Version),
 			HE_VERSION_MINOR(m_Specification.Version),
-			HE_VERSION_PATCH(m_Specification.Version));
+			HE_VERSION_PATCH(m_Specification.Version),
+			HE_VERSION_TYPE_STRING(m_Specification.Version));
 
 		// Check singleton
 		LOG_CORE_ASSERT(!s_Instance, "Application already exists!");
@@ -127,10 +127,10 @@ namespace Helios {
 
 	Application::~Application()
 	{
+		LOG_CORE_INFO("App Shutdown.");
+
 		Config::Save();
 		Renderer::Shutdown();
-
-		LOG_CORE_INFO("Shutdown.");
 	}
 
 
@@ -169,6 +169,7 @@ namespace Helios {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(HE_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(HE_BIND_EVENT_FN(Application::OnWindowResize));
+		dispatcher.Dispatch<FramebufferResizeEvent>(HE_BIND_EVENT_FN(Application::OnFramebufferResize));
 
 		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
 		{
@@ -203,6 +204,31 @@ namespace Helios {
 					fps_ts = 0;
 				}
 			} // tempoary for debuging
+
+			Renderer::Get()->Render();
+
+
+//			{
+//				static double lastTime, currentTime;
+//				static int numFrames;
+//				static float frameTime;
+//
+//				currentTime = glfwGetTime();
+//				double delta = currentTime - lastTime;
+//
+//				if (delta >= 1)
+//				{
+//					int framerate{ std::max(1, int(numFrames / delta)) };
+//					std::stringstream title;
+//					title << "Running at " << framerate << " fps.";
+//					glfwSetWindowTitle((GLFWwindow*)m_Window->GetNativeWindow(), title.str().c_str());
+//					lastTime = currentTime;
+//					numFrames = -1;
+//					frameTime = float(1000.0 / framerate);
+//				}
+//				++numFrames;
+//			}
+
 
 			if (!m_Minimized)
 			{
@@ -245,6 +271,21 @@ namespace Helios {
 
 		m_Minimized = false;
 		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+
+		return false;
+	}
+
+
+	bool Application::OnFramebufferResize(FramebufferResizeEvent& e)
+	{
+		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			m_Minimized = true;
+			return false;
+		}
+
+		m_Minimized = false;
+		Renderer::OnFramebufferResize(e.GetWidth(), e.GetHeight());
 
 		return false;
 	}

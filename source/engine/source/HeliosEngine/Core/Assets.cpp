@@ -73,7 +73,8 @@ namespace Helios::Assets {
 		file.open(filepath, std::ios::ate | std::ios::binary);
 		if (!file.is_open())
 		{
-			LOG_CORE_ASSERT(0, "Failed to open real file: \"" + filename + "\"");
+//			LOG_CORE_ASSERT(0, "Failed to open real file: \"" + filename + "\"");
+			LOG_CORE_EXCEPT("Failed to open real file: \"" + filename + "\"");
 		}
 
 		// Create buffer with target size

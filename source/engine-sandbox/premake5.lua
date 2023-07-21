@@ -16,11 +16,9 @@ project "helios.engine.sandbox"
 	-- Libraries
 	LibHeliosEngine{}
 
-
 	includedirs {
 		"source",
 	}
-
 
 	files {
 		"**.h",
@@ -29,7 +27,6 @@ project "helios.engine.sandbox"
 		"**.cpp"
 	}
 
-
 	filter "configurations:Debug"
 
 		kind "ConsoleApp"
@@ -37,14 +34,12 @@ project "helios.engine.sandbox"
 		defines {
 		}
 
-
 	filter "configurations:Release"
 
 		kind "WindowedApp"
 
 		defines {
 		}
-
 
 	filter {}
 

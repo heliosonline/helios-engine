@@ -1,25 +1,3 @@
--------------------------------------------------------------------------------
---  Custom Libraries
--------------------------------------------------------------------------------
-
-
---function LibCommon()
---	includedirs "%{wks.location}/Source/Libs/LibCommon/Source"
---	links "LibCommon"
---end
-
-
---function LibNet()
---	includedirs "%{wks.location}/Source/Libs/LibNet/Source"
---	links "LibNet"
---
---	VendorAsio {}
---end
-
-
---function LibLuaHelper()
---	includedirs "%{wks.location}/Source/Libs/LibLuaHelper/Source"
---end
 
 
 function LibHeliosEngine()
@@ -43,6 +21,11 @@ function LibHeliosEngine()
 	includedirs "%{wks.location}/source/engine/source"
 	links "helios.engine"
 end
+	
+	
+-------------------------------------------------------------------------------
+--  Custom Libraries
+-------------------------------------------------------------------------------
 
 
 -------------------------------------------------------------------------------
@@ -60,20 +43,24 @@ end
 
 
 function VendorOpenGL()
+	-- TODO...
+	-- TODO...
+	-- TODO...
 end
 
 
 function VendorMetal()
+	-- TODO...
+	-- TODO...
+	-- TODO...
 end
 
 
 function VendorDirectX()
+	-- TODO...
+	-- TODO...
+	-- TODO...
 end
-
-
---function VendorAsio()
---	includedirs "%{wks.location}/Source/Vendor/asio/asio-1.24.0/include"
---end
 
 
 --function VendorFreetype()
@@ -89,14 +76,14 @@ end
 
 
 function VendorGlfw()
-	includedirs "%{wks.location}/vendor/glfw/include"
+	includedirs "%{wks.location}/vendor/libs/glfw/include"
 	defines "GLFW_INCLUDE_NONE"
 	links "vendor.glfw"
 end
 
 
 function VendorGlm()
-	includedirs "%{wks.location}/vendor/glm"
+	includedirs "%{wks.location}/vendor/headers/glm"
 end
 
 
@@ -133,7 +120,7 @@ end
 
 
 function VendorSpdlog()
-	includedirs "%{wks.location}/vendor/spdlog/include"
+	includedirs "%{wks.location}/vendor/headers/spdlog/include"
 end
 
 

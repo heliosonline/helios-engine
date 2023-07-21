@@ -6,10 +6,15 @@ namespace Helios {
 
 	enum class EventType
 	{
+		// EventCategory::None
 		None = 0,
+		// EventCategory::EventCategoryApplication
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
+		FramebufferResize,
 		AppTick, AppUpdate, AppRender,
+		// EventCategory::EventCategoryKeyboard
 		KeyPressed, KeyReleased, KeyTyped,
+		// EventCategory::EventCategoryMouse
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 

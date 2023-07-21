@@ -1,39 +1,64 @@
 #pragma once
 
-#include "Platform/Renderer/Vulkan/VKRendererAPI.h"
-
+#include <vulkan/vulkan.hpp>
 
 namespace Helios::Vulkan {
 
 
-	class Devices;
-	class Swapchain;
+	struct PipelineConfigInfo {
+		PipelineConfigInfo() = default;
+		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+
+		vk::PipelineViewportStateCreateInfo viewportInfo;
+		vk::PipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+		vk::PipelineRasterizationStateCreateInfo rasterizationInfo;
+		vk::PipelineMultisampleStateCreateInfo multisampleInfo;
+		vk::PipelineColorBlendAttachmentState colorBlendAttachment;
+		vk::PipelineColorBlendStateCreateInfo colorBlendInfo;
+		vk::PipelineDepthStencilStateCreateInfo depthStencilInfo;
+		std::vector<vk::DynamicState> dynamicStateEnables;
+		vk::PipelineDynamicStateCreateInfo dynamicStateInfo;
+
+		vk::PipelineLayout pipelineLayout = nullptr;
+		vk::RenderPass renderPass = nullptr;
+		uint32_t subpass = 0;
+
+//		std::vector<VkVertexInputBindingDescription> bindingDescriptions{};
+//		std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
+	};
 
 
 	class Pipeline
 	{
 	public:
-		Pipeline();
-		~Pipeline() = default;
+		Pipeline(const std::string &vertShader, const std::string &fragShader, const PipelineConfigInfo &configInfo);
+		~Pipeline();
 
-		void Create();
+		void Create(const std::string &vertShader, const std::string &fragShader, const PipelineConfigInfo &configInfo);
 		void Destroy();
 
 	public:
+		void Bind(vk::CommandBuffer commandBuffer);
 
+	// Getter for vulkan objects
+	public:
+		vk::Pipeline& GetGraphicsPipeline() { return m_vkGraphicsPipeline; }
+
+		static void DefaultConfigInfo(PipelineConfigInfo& confifInfo);
+
+	// Vulkan objects
 	private:
-		vk::PipelineLayout CreateLayout();
-		vk::RenderPass CreateRenderPass();
+		vk::Pipeline m_vkGraphicsPipeline;
+		vk::ShaderModule m_vkVertShaderModule;
+		vk::ShaderModule m_vkFragShaderModule;
 
+	// Internal helper
 	private:
-		// Class/Object pointers
-		Ref<Devices> m_Devices;
-		Ref<Swapchain> m_Swapchain;
+		vk::ShaderModule CreateShaderModule(const std::vector<char> &code);
 
-		// Vulkan objects
-		vk::PipelineLayout m_vkLayout;
-		vk::RenderPass m_vkRenderPass;
-		vk::Pipeline m_vkPipeline;
+	// Internal data
+	private:
 	};
 
 

@@ -14,6 +14,7 @@ namespace Helios {
 		static void Shutdown();
 
 		static void OnWindowResize(uint32_t width, uint32_t height);
+		static void OnFramebufferResize(uint32_t width, uint32_t height);
 
 		static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 		static RendererAPI* Get() { return s_RendererAPI.get(); }

@@ -1,6 +1,5 @@
 #include "pch.h"
-
-#include "HeliosEngine/Renderer/Renderer.h"
+#include "Renderer.h"
 
 #include "HeliosEngine/Core/Application.h"
 #include "HeliosEngine/Core/Config.h"

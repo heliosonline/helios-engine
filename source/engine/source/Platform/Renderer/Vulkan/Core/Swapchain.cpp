@@ -1,6 +1,5 @@
 #include "pch.h"
-
-#include "Platform/Renderer/Vulkan/Core/Swapchain.h"
+#include "Swapchain.h"
 
 #include "HeliosEngine/Renderer/Renderer.h"
 #include "Platform/Renderer/Vulkan/VKRendererAPI.h"

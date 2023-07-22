@@ -5,12 +5,16 @@
 #include <HeliosEngine/Core/Application.h>
 #include <HeliosEngine/Core/Assets.h>
 #include <HeliosEngine/Core/Config.h>
+#include <HeliosEngine/Core/Input.h>
 #include <HeliosEngine/Core/Layer.h>
 //#include <HeliosEngine/UI/UILayer.h>
-#include <HeliosEngine/Core/Input.h>
 #include <HeliosEngine/Core/Timer.h>
 #include <HeliosEngine/Core/Timestep.h>
-//#include <HeliosEngine/Core/UUID.h>
+#include <HeliosEngine/Core/UUID.h>
+
+// Entity Component System
+#include <HeliosEngine/ECS/ECS.h>
+#include <HeliosEngine/ECS/Components.h>
 
 // Events
 #include <HeliosEngine/Events/Event.h>

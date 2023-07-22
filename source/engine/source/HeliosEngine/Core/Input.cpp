@@ -1,6 +1,6 @@
 #include "pch.h"
+#include "Input.h"
 
-#include "HeliosEngine/Core/Input.h"
 #include "HeliosEngine/Core/Application.h"
 
 #include <GLFW/glfw3.h>

@@ -1,6 +1,6 @@
 #include "pch.h"
+#include "Application.h"
 
-#include "HeliosEngine/Core/Application.h"
 #include "HeliosEngine/Core/Config.h"
 #include "HeliosEngine/Core/EntryPoint.h"
 #include "HeliosEngine/Core/Timer.h"

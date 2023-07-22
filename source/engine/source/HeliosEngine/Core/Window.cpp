@@ -1,6 +1,5 @@
 #include "pch.h"
-
-#include "HeliosEngine/Core/Window.h"
+#include "Window.h"
 
 #include "HeliosEngine/Events/ApplicationEvent.h"
 #include "HeliosEngine/Events/MouseEvent.h"

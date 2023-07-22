@@ -2,6 +2,7 @@
 
 function LibHeliosEngine()
 	-- libraries
+	VendorEnTT{}
 --	LibLuaHelper{}
 --	VendorGlad{}
 	VendorGlfw{}
@@ -60,6 +61,11 @@ function VendorDirectX()
 	-- TODO...
 	-- TODO...
 	-- TODO...
+end
+
+
+function VendorEnTT()
+	includedirs "%{wks.location}/vendor/headers/entt/src"
 end
 
 

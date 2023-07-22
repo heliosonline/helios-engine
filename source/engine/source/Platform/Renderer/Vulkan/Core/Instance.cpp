@@ -1,6 +1,5 @@
 #include "pch.h"
-
-#include "Platform/Renderer/Vulkan/Core/Instance.h"
+#include "Instance.h"
 
 #include "HeliosEngine/Core/Application.h"
 

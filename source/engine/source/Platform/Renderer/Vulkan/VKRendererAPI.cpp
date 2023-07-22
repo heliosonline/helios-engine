@@ -1,6 +1,5 @@
 #include "pch.h"
-
-#include "Platform/Renderer/Vulkan/VKRendererAPI.h"
+#include "VKRendererAPI.h"
 
 #include "HeliosEngine/Core/Assets.h"
 

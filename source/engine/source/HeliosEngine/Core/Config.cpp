@@ -1,6 +1,5 @@
 #include "pch.h"
-
-#include "HeliosEngine/Core/Config.h"
+#include "Config.h"
 
 
 namespace Helios {

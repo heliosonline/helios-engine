@@ -1,6 +1,5 @@
 #include "pch.h"
-
-#include "HeliosEngine/Core/Assets.h"
+#include "Assets.h"
 
 
 namespace Helios::Assets {

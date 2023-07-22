@@ -58,5 +58,9 @@
 //#include <glm/gtc/type_ptr.hpp>
 
 
+// Libraries (EnTT)
+#include <entt/entt.hpp>
+
+
 // Libraries (other)
 //#include <Common/Misc.h>

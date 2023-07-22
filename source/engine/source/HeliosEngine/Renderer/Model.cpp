@@ -1,6 +1,6 @@
 #include "pch.h"
+#include "Model.h"
 
-#include "HeliosEngine/Renderer/Model.h"
 #include "HeliosEngine/Renderer/Renderer.h"
 
 // related on build options and platform

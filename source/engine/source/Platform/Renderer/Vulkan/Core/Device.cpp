@@ -1,6 +1,5 @@
 #include "pch.h"
-
-#include "Platform/Renderer/Vulkan/Core/Device.h"
+#include "Device.h"
 
 #include "HeliosEngine/Renderer/Renderer.h"
 #include "Platform/Renderer/Vulkan/VKRendererAPI.h"

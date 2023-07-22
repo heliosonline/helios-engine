@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Log.h"
 
 #pragma warning(push, 0)
 #	include <spdlog/spdlog.h>

@@ -15,9 +15,10 @@ project "helios.engine"
 	pchsource "source/pch.cpp"
 
 	-- Libraries
+	VendorEnTT{}
 	VendorGlfw{}
-	VendorSpdlog{}
 	VendorGlm{}
+	VendorSpdlog{}
 
 
 	includedirs {
@@ -137,8 +138,8 @@ project "helios.engine"
 --	prebuildcommands {
 --		"\"%{wks.location}Tools/build_inc/_bin/build_inc_" .. os.host() .. "\" -bfile \"%{prj.location}Source/Config/Version.h\" -bdef VERSION_BUILD"
 --	}
---
---
+
+
 	postbuildmessage "Copying assets to the target folder..."
 	postbuildcommands {
 		"{COPYDIR} \"%{prj.location}assets\" \"" .. dir_bin .. dir_group .. dir_config .. "Assets\""

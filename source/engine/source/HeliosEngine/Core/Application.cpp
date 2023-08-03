@@ -44,7 +44,7 @@ namespace Helios {
 		return false;
 	}
 
-	std::string ApplicationCommandLineArgs::Get(std::string arg)
+	std::string ApplicationCommandLineArgs::Get(std::string arg, std::string default_value)
 	{
 		for (auto x = 1; x < Count; x++)
 		{
@@ -58,7 +58,7 @@ namespace Helios {
 			if (key.compare(arg) == 0)
 				return trimmed.substr(trimmed.find_first_of('=') + 1);
 		}
-		return "";
+		return default_value;
 	}
 
 

@@ -27,7 +27,7 @@ namespace Helios {
 		}
 
 		bool Check(std::string arg);
-		std::string Get(std::string arg);
+		std::string Get(std::string arg, std::string default_value = "");
 	};
 
 	enum Hints

@@ -40,5 +40,23 @@ namespace Helios {
 		return path;
 	}
 
+	// Note for myself...
+	// see: https://www.youtube.com/watch?v=5_RAHZQCPjE
+	// PCG_hash()
+	uint32_t FastRnd(uint32_t seed)
+	{
+		uint32_t state = seed * 747796405u + 2891336453u;
+		uint32_t word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
+		return (word >> 22u) ^ word;
+	}
+
+
+	float RandomFloat(uint32_t& seed)
+	{
+		seed = FastRnd(seed);
+		return (float)seed / (float)std::numeric_limits<uint32_t>().max();
+	}
+
+
 } // namespace Helios
 

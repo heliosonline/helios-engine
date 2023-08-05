@@ -20,16 +20,16 @@ bool test1 = args.Check("arg");
 #### Example code to get the value of an argument:
 ```C++
 Helios::ApplicationCommandLineArgs args = Helios::Application::Get().GetSpecification().CommandLineArgs;
-std::string test1 = args.Get("arg", "optional defalt value");
+std::string test1 = args.Get("arg", "optional default value");
 std::string test2 = args.Get("arg"); // test2 == "" if arg does not exist
 ```
 
 ### Reserved Command Line Arguments:
 
-| Argument:  | Description: |
-| ---        | --- |
-| `opengl`  | Forces the rendering engine to use OpenGL. |
-| `vulkan`  | Forces the rendering engine to use Vulkan. |
-| `directx` | Forces the rendering engine to use DirectX. <br/> _(Note: Windows only!)_ |
-| `metal`   | Forces the rendering engine to use Metal.  <br/> _(Note: MacOS only!)_ |
+| Argument:       | Description: |
+| ---             | --- |
+| `force_opengl`  | Forces the rendering engine to use OpenGL. |
+| `force_vulkan`  | Forces the rendering engine to use Vulkan. |
+| `force_directx` | Forces the rendering engine to use DirectX. <br/> _(Note: Windows only!)_ |
+| `force_metal`   | Forces the rendering engine to use Metal.  <br/> _(Note: MacOS only!)_ |
 

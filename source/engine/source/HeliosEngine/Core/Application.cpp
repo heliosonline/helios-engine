@@ -10,9 +10,6 @@
 
 #include "HeliosEngine/Renderer/Renderer.h"
 
-//#include <GLFW/glfw3.h>
-//#include <imgui.h>
-
 
 namespace Helios {
 
@@ -84,7 +81,6 @@ namespace Helios {
 		LOG_CORE_INFO("Logging started.");
 
 		// Log versions
-		LOG_CORE_DEBUG("Working path: {0}", m_Specification.WorkingDirectory);
 		LOG_CORE_INFO("Engine-Version: {}.{}.{} ({})",
 			HE_VERSION_MAJOR(HE_VERSION),
 			HE_VERSION_MINOR(HE_VERSION),
@@ -95,6 +91,23 @@ namespace Helios {
 			HE_VERSION_MINOR(m_Specification.Version),
 			HE_VERSION_PATCH(m_Specification.Version),
 			HE_VERSION_TYPE_STRING(m_Specification.Version));
+		LOG_CORE_DEBUG("Lib \"GLFW\": {}.{}.{}",
+			GLFW_VERSION_MAJOR,
+			GLFW_VERSION_MINOR,
+			GLFW_VERSION_REVISION);
+		LOG_CORE_DEBUG("Lib \"spdlog\": {}.{}.{}",
+			SPDLOG_VER_MAJOR,
+			SPDLOG_VER_MINOR,
+			SPDLOG_VER_PATCH);
+		LOG_CORE_DEBUG("Lib \"EnTT\": {}.{}.{}",
+			ENTT_VERSION_MAJOR,
+			ENTT_VERSION_MINOR,
+			ENTT_VERSION_PATCH);
+		LOG_CORE_DEBUG("Lib \"GLM\": {}.{}.{}",
+			GLM_VERSION_MAJOR,
+			GLM_VERSION_MINOR,
+			GLM_VERSION_PATCH);
+		LOG_CORE_DEBUG("Working path: {}", m_Specification.WorkingDirectory);
 
 		// Check singleton
 		LOG_CORE_ASSERT(!s_Instance, "Application already exists!");
@@ -131,6 +144,8 @@ namespace Helios {
 
 		Config::Save();
 		Renderer::Shutdown();
+
+		s_Instance = nullptr;
 	}
 
 
@@ -189,10 +204,10 @@ namespace Helios {
 
 			{ // tempoary for debuging
 				static int fps = 0;
-				fps += (int)(1.0f / timestep);
 				static int fps_cnt = 0;
-				fps_cnt++;
 				static float fps_ts = 0;
+				fps += (int)(1.0f / timestep);
+				fps_cnt++;
 				fps_ts += timestep;
 				if (fps_ts >= 1.0f)
 				{
@@ -204,9 +219,6 @@ namespace Helios {
 					fps_ts = 0;
 				}
 			} // tempoary for debuging
-
-			Renderer::Get()->Render();
-
 
 //			{
 //				static double lastTime, currentTime;
@@ -229,14 +241,17 @@ namespace Helios {
 //				++numFrames;
 //			}
 
-
+			// Rendering
 			if (!m_Minimized)
 			{
-				{
-					for (Layer* layer : m_LayerStack)
-						layer->OnUpdate(timestep);
-				}
+				// Update all layers before rendering
+				for (Layer* layer : m_LayerStack)
+					layer->OnUpdate(timestep);
 
+				// Render
+				Renderer::Get()->Render();
+
+//				// ImGui rendering
 //				{
 //					m_ImGuiLayer->Begin();
 //					//static bool show = true;
@@ -247,9 +262,8 @@ namespace Helios {
 //				}
 			}
 
-			{
-				m_Window->OnUpdate();
-			}
+			// Poll events and so on
+			m_Window->OnUpdate();
 		}
 	}
 

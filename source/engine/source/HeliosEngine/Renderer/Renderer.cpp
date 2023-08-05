@@ -54,9 +54,9 @@ namespace Helios {
 		else
 			LOG_RENDER_INFO("Previously used renderer API \"{}\" is unknown!", apistr);
 
-		// Check if an API is requested
+		// Check if an API is requested with command line argument
 		ApplicationCommandLineArgs args = Application::Get().GetSpecification().CommandLineArgs;
-		if (args.Check("directx"))
+		if (args.Check("force_directx"))
 		{
 			LOG_RENDER_INFO("Requested renderer API from CmdArgs: DirectX.");
 #			ifdef BUILDWITH_RENDERER_DIRECTX
@@ -65,7 +65,7 @@ namespace Helios {
 				LOG_RENDER_INFO("Requested renderer API is not supported in this build.");
 #			endif
 		}
-		if (args.Check("metal"))
+		if (args.Check("force_metal"))
 		{
 			LOG_RENDER_INFO("Requested renderer API from CmdArgs: Metal.");
 #			ifdef BUILDWITH_RENDERER_METAL
@@ -74,7 +74,7 @@ namespace Helios {
 				LOG_RENDER_INFO("Requested renderer API is not supported in this build.");
 #			endif
 		}
-		if (args.Check("vulkan"))
+		if (args.Check("force_vulkan"))
 		{
 			LOG_RENDER_INFO("Requested renderer API from CmdArgs: Vulkan.");
 #			ifdef BUILDWITH_RENDERER_VULKAN
@@ -83,7 +83,7 @@ namespace Helios {
 				LOG_RENDER_INFO("Requested renderer API is not supported in this build.");
 #			endif
 		}
-		if (args.Check("opengl"))
+		if (args.Check("force_opengl"))
 		{
 			LOG_RENDER_INFO("Requested renderer API from CmdArgs: OpenGL.");
 #			ifdef BUILDWITH_RENDERER_OPENGL
@@ -120,6 +120,7 @@ namespace Helios {
 		HE_PROFILER_FUNCTION();
 
 		s_RendererAPI->Shutdown();
+		s_RendererAPI.reset();
 	}
 
 

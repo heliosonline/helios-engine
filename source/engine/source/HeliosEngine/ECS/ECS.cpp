@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ECS.h"
 
+#include "HeliosEngine/Core/UUID.h"
 #include "HeliosEngine/ECS/Entity.h"
 
 
@@ -9,13 +10,26 @@
 // ref -> https://www.youtube.com/watch?v=-B1iu4QJTUc&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT&index=78
 
 
-namespace Helios::ECS {
+namespace Helios {
 
 
-	entt::registry s_Registry{};
+	entt::registry ECS::s_Registry;
+	std::unordered_map<UUID, entt::entity> ECS::s_EntityMap;
 
 
-	Entity Create(const UUID uuid, const std::string& name)
+	entt::registry& ECS::Registry()
+	{
+		return s_Registry;
+	}
+
+
+	Entity ECS::Create(const std::string& name)
+	{
+		return Create(UUID(), name);
+	}
+
+
+	Entity ECS::Create(UUID uuid, const std::string& name)
 	{
 		Entity entity = { s_Registry.create()};
 
@@ -23,16 +37,17 @@ namespace Helios::ECS {
 		entity.AddComponent<Component::Transform>();
 		auto& cname = entity.AddComponent<Component::Name>(name);
 
-//		m_EntityMap[uuid] = entity;
+		s_EntityMap[uuid] = entity;
 
 		return entity;
 	}
 
 
-	entt::registry& Registry()
+	void ECS::Destroy(Entity& entity)
 	{
-		return s_Registry;
+		s_EntityMap.erase(entity.GetUUID());
+		s_Registry.destroy(entity);
 	}
 
 
-} // namespace Helios::ECS
+} // namespace Helios

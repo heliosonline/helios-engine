@@ -76,7 +76,7 @@ namespace Helios {
 
 	// Helper
 	public:
-		UUID GetID() { return GetComponent<Component::ID>().uuid; }
+		UUID GetUUID() { return GetComponent<Component::ID>().uuid; }
 		const std::string& GetName() { return GetComponent<Component::Name>().name; }
 
 	private:

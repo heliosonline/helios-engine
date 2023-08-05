@@ -2,9 +2,6 @@
 
 #include "HeliosEngine/Core/UUID.h"
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
-
 
 namespace Helios::Component {
 

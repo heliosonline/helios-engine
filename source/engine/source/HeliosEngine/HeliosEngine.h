@@ -15,6 +15,7 @@
 // Entity Component System
 #include <HeliosEngine/ECS/ECS.h>
 #include <HeliosEngine/ECS/Components.h>
+#include <HeliosEngine/ECS/Entity.h>
 
 // Events
 #include <HeliosEngine/Events/Event.h>
